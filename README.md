@@ -1,2 +1,2 @@
 # LedgerLabsCoops2016
-# LedgerLabsCoops2016
+Actual readme content coming soon!
