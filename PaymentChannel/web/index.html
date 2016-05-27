@@ -1,0 +1,32 @@
+<html>
+	<head>
+		<title>Cool Payment Channel System</title>
+		<script src="web3.js/dist/web3.min.js"></script>
+		<script src="PaymentChannel.js"></script>
+	</head>
+	<body>
+		<h1>Micropayment Channel</h1>
+		<hr />
+		<form action="" method="GET">
+			Address Index:
+			<br /><input type="text" name="index" /><br />
+			Payment to Address Zero:
+			<br /><input type="text" name="payment" /><br />
+			Nonce:
+			<br /><input type="text" name="nonce" /><br />
+			<br />
+			<input type="button" value="Sign" onClick="sign(this.form)" />
+			<input type="button" value="Exit Contract" onClick="endContract(this.form)" />
+			<input type="button" value="Pay Out" onClick="finaliseContract(this.form)" />
+			<br />
+			Signature:
+			<br />
+			v: <input type="text" name="v"><br />
+			r: <input type="text" name="r"><br />
+			s: <input type="text" name="s"><br />
+		</form>
+		<hr />
+		Denton sucks at UI.
+	</body>
+</html>
+
