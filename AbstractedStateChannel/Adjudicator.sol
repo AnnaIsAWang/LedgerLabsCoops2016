@@ -1,5 +1,5 @@
-import "Owned";
-import "LockedState";
+import "Owned.sol";
+import "LockedState.sol";
 
 contract Adjudicator is Owned {
 

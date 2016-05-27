@@ -1,5 +1,5 @@
-import "Adjudicator";
-import "LockedState";
+import "Adjudicator.sol";
+import "LockedState.sol";
 
 contract Rules {
 

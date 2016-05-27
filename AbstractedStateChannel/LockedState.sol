@@ -1,4 +1,4 @@
-import "Owned";
+import "Owned.sol";
 
 contract LockedState is Owned {
 
