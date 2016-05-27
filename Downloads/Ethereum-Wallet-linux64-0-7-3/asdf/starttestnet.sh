@@ -1,1 +1,0 @@
-geth --genesis genesis.json --datadir testdatadir/ --ipcpath ~/.ethereum/geth.ipc --networkid 69 --nodiscover --maxpeers 0 --rpc --rpccorsdomain="http://localhost http://localhost:8000" --unlock "0x135A7dE83802408321B74C322f8558db1679Ac20"
