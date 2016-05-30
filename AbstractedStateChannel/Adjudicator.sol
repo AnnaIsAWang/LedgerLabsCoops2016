@@ -51,6 +51,9 @@ contract Adjudicator is Owned {
     // Gets the address of the LockedState
     function getLockedStateAddress() constant external returns (address lockedState) {}
 
+    // Gets the current nonce
+    function getNonce() constant external returns (uint nonce) {}
+
     /**
      * Checks signatures and updates the state as necessary.
      * It is onlyOwner because the Rules contract which owns this should
