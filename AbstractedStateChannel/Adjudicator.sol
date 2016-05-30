@@ -51,8 +51,13 @@ contract Adjudicator is Owned {
     // Gets the address of the LockedState
     function getLockedStateAddress() constant external returns (address lockedState) {}
 
+    // Gets the timeout
+    function getTimeout() constant external returns (uint timeout) {}
     // Gets the current nonce
     function getNonce() constant external returns (uint nonce) {}
+
+    // Gets the last timestamp
+    function getLastTimestamp() constant external returns (uint lastTimestamp) {}
 
     /**
      * Checks signatures and updates the state as necessary.
