@@ -1,13 +1,26 @@
 import "LockedStateWithFunds.sol";
 
+/**
+ * TicTacToeLockedState
+ *
+ * The LockedState for a TicTacToe game.
+ */
 contract TicTacToeLockedState is LockedStateWithFunds {
 
     // byte mappings for state
-    // 0-19 address1
-    // 20-39 address2
-    // 40-71 send1
-    // 72-104 send2
+    // 0-19 address1, the recipient of send1
+    // 20-39 address2, the recipient of send2
+    // 40-71 send1, amount of wei to send to address1
+    // 72-104 send2, amount of wei to send to address2
 
+
+    /**
+     * Parses and returns a 4-tuple representing the address1, address2, send1, send2
+     * corresponding to the state.
+     *
+     * state: the state to be parsed
+     * returns: a 4-tuple, (address address1, address address2, uint send1, uint send2)
+     */
     function parseState(bytes state)
         constant returns (address address1, address address2, uint send1, uint send2)
     {
@@ -34,6 +47,13 @@ contract TicTacToeLockedState is LockedStateWithFunds {
         }
     }
 
+    /**
+     * Checks if a given state is valid.
+     * send1 + send2 must be equal to the balance of address1 + the balance of address2
+     *
+     * state: the state to check
+     * returns: true if the state is valid, otherwise false
+     */
     function checkState(bytes state) constant returns (bool) {
         address address1;
         address address2;
@@ -44,6 +64,12 @@ contract TicTacToeLockedState is LockedStateWithFunds {
         return send1 + send2 == getBalance(address1) + getBalance(address2);
     }
 
+    /**
+     * Sends the amount of funds to each address, as allotted.
+     *
+     * state: the state that will be broadcast
+     * returns: true if transaction sent sucessfully, otherwise false
+     */
     function broadcastState(bytes state) external onlyOwner returns (bool) {
         if (!checkState(state)) {
             return false;

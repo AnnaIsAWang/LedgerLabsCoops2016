@@ -1,3 +1,8 @@
+/**
+ * Owned
+ *
+ * Inheritable contract that provides onlyOwner modifier.
+ */
 contract Owned {
 
     address owner;
@@ -6,6 +11,7 @@ contract Owned {
         owner = msg.sender;
     }
 
+    // only allows the owner to call the function
     modifier onlyOwner {
         if (msg.sender != owner) {
             throw;
