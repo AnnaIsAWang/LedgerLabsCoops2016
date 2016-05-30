@@ -11,15 +11,15 @@ contract TicTacToeAdjudicator is Adjudicator {
     /**
      * Creates a new TicTacToeAdjudicator
      *
-     * address1: The address of the first player
-     * address2: The address of the second player
+     * addressX: The address of the X player
+     * addressO: The address of the O player
      * _timeout: The amount of time required before the state channel can be closed normally.
      */
-    function TicTacToeAdjudicator(address address1, address address2, uint _timeout)
+    function TicTacToeAdjudicator(address addressX, address addressO, uint _timeout)
         Adjudicator(new address[](2), 2, _timeout)
     {
-        addresses[0] = address1;
-        addresses[1] = address2;
+        addresses[0] = addressX;
+        addresses[1] = addressO;
     }
 
     // creates and returns a new TicTacToeLockedState
