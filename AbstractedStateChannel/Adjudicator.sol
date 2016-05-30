@@ -63,6 +63,10 @@ contract Adjudicator is Owned {
      * Checks signatures and updates the state as necessary.
      * It is onlyOwner because the Rules contract which owns this should
      * be able to enforce its rules by passing in different requiredSignators arguments.
+	 *
+	 * If requiredSignators is 0, the nonce can be equal to the old nonce because,
+	 * in this case, we are assuming that Rules is making a ruling on something and, thus,
+	 * it updates the state without updating the nonce.
      *
      * requiredSignators: number of signatures required to be valid
      * data: the data which will become the next state if everything is valid
@@ -82,28 +86,28 @@ contract Adjudicator is Owned {
         bytes32[] r,
         bytes32[] s
     ) external onlyOwner returns (bool) {
-        if (newNonce >= nonce) {
+        if (newNonce > nonce || (newNonce == nonce && requiredSignators == 0)) {
+            bytes32 hash = sha3(data, newNonce);
+
+            uint signatures = 0;
+            for (uint i = 0; i < addresses.length; i++) {
+                if (addresses[i] == ecrecover(hash, v[i], r[i], s[i])) {
+                    signatures++;
+                }
+
+                if (signatures >= requiredSignators) {
+                    nonce = newNonce;
+                    lastTimestamp = now;
+                    state = data;
+                    CloseEvent(state, nonce);
+                    return true;
+                }
+            }
+
+            return false;
+        } else {
             return false;
         }
-
-        bytes32 hash = sha3(data, newNonce);
-
-        uint signatures = 0;
-        for (uint i = 0; i < addresses.length; i++) {
-            if (addresses[i] == ecrecover(hash, v[i], r[i], s[i])) {
-                signatures++;
-            }
-
-            if (signatures >= requiredSignators) {
-                nonce = newNonce;
-                lastTimestamp = now;
-                state = data;
-                CloseEvent(state, nonce);
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
