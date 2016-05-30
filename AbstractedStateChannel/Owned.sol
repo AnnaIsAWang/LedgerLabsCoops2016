@@ -11,7 +11,7 @@ contract Owned {
         owner = msg.sender;
     }
 
-	// only allows the owner to call the function
+    // only allows the owner to call the function
     modifier onlyOwner {
         if (msg.sender != owner) {
             throw;
