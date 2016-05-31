@@ -157,6 +157,10 @@ contract Adjudicator is Owned {
         return false;
     }
 
+    function cancelClose() external onlyOwner {
+        lastTimestamp = 0;
+    }
+
     // kills the contract
     function kill() external onlyOwner {
         lockedState.kill();
