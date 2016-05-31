@@ -10,9 +10,15 @@ import "TicTacToeAdjudicator.sol";
  */
 contract TicTacToeRules is Rules {
 
-    constant uint NONE = 0;
-    constant uint X = 1;
-    constant uint O = 4;
+    uint constant NONE = 0;
+    uint constant X = 1;
+    uint constant O = 4;
+
+    bytes TIE;
+    bytes X_WINS;
+    bytes O_WINS;
+    bytes X_SUPER_WINS;
+    bytes O_SUPER_WINS;
 
     address addressX;
     address addressO;
@@ -22,6 +28,16 @@ contract TicTacToeRules is Rules {
         addressX = _addressX;
         addressO = _addressO;
         timeout = _timeout;
+        TIE = new bytes(1);
+        X_WINS = new bytes(1);
+        O_WINS = new bytes(1);
+        X_SUPER_WINS = new bytes(1);
+        O_SUPER_WINS = new bytes(1);
+        TIE[0] = byte(0);
+        X_WINS[0] = byte(1);
+        O_WINS[0] = byte(2);
+        X_SUPER_WINS[0] = byte(3);
+        O_SUPER_WINS[0] = byte(4);
     }
 
     function createAdjudicator() internal returns (Adjudicator adjudicator) {
@@ -32,7 +48,7 @@ contract TicTacToeRules is Rules {
     }
 
     function gridToIndex(uint x, uint y) constant internal returns (uint) {
-        return x + GRID_SIZE*y;
+        return x + 3*y;
     }
 
     function sendState(
@@ -45,9 +61,9 @@ contract TicTacToeRules is Rules {
         bytes32 r2,
         bytes32 s2
     ) external returns (bool) {
-        uint8[] v = new uint8[](2);
-        bytes32[] r = new bytes32[](2);
-        bytes32[] s = new bytes32[](2);
+        uint8[] memory v = new uint8[](2);
+        bytes32[] memory r = new bytes32[](2);
+        bytes32[] memory s = new bytes32[](2);
 
         v[0] = v1;
         v[1] = v2;
@@ -69,11 +85,13 @@ contract TicTacToeRules is Rules {
         bytes32 r2,
         bytes32 s2
     ) external returns (bool) {
+        uint sum;
+        uint i;
         uint x;
         uint y;
-        uint8[] v = new uint8[](2);
-        bytes32[] r = new bytes32[](2);
-        bytes32[] s = new bytes32[](2);
+        uint8[] memory v = new uint8[](2);
+        bytes32[] memory r = new bytes32[](2);
+        bytes32[] memory s = new bytes32[](2);
 
         v[0] = v1;
         v[1] = v2;
@@ -86,13 +104,13 @@ contract TicTacToeRules is Rules {
         for (x = 0; x < 3; x++) {
             sum = 0;
             for (y = 0; y < 3; y++) {
-                sum += uint(state[gridToIndex(x, y)]);
+                sum += uint(board[gridToIndex(x, y)]);
             }
             if (sum == X * 3) {
-                adjudicator.close(0, nonce, byte(1), new uint8[](2), new bytes32[](2), new bytes32[](2));
+                adjudicator.close(0, X_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
                 return true;
             } else if (sum == O * 3) {
-                adjudicator.close(0, nonce, byte(2), new uint8[](2), new bytes32[](2), new bytes32[](2));
+                adjudicator.close(0, O_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
                 return true;
             }
         }
@@ -101,13 +119,13 @@ contract TicTacToeRules is Rules {
         for (y = 0; y < 3; y++) {
             sum = 0;
             for (x = 0; x < 3; x++) {
-                sum += uint(state[gridToIndex(x, y)]);
+                sum += uint(board[gridToIndex(x, y)]);
             }
             if (sum == X * 3) {
-                adjudicator.close(0, nonce, byte(1), new uint8[](2), new bytes32[](2), new bytes32[](2));
+                adjudicator.close(0, X_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
                 return true;
             } else if (sum == O * 3) {
-                adjudicator.close(0, nonce, byte(2), new uint8[](2), new bytes32[](2), new bytes32[](2));
+                adjudicator.close(0, O_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
                 return true;
             }
         }
@@ -115,43 +133,46 @@ contract TicTacToeRules is Rules {
         //checking \
         sum = 0;
         for (x = 0; x < 3; x++) {
-            sum += uint(state[gridToIndex(x, x)]);
+            sum += uint(board[gridToIndex(x, x)]);
         }
         if (sum == X * 3) {
-            adjudicator.close(0, nonce, byte(1), new uint8[](2), new bytes32[](2), new bytes32[](2));
+            adjudicator.close(0, X_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
             return true;
         } else if (sum == O * 3) {
-            adjudicator.close(0, nonce, byte(2), new uint8[](2), new bytes32[](2), new bytes32[](2));
+            adjudicator.close(0, O_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
             return true;
         }
 
         //checking /
         sum = 0;
         for (x = 0; x < 3; x++) {
-            sum += uint(state[gridToIndex(x, 3-1 - x)]);
+            sum += uint(board[gridToIndex(x, 2 - x)]);
         }
         if (sum == X * 3) {
-            adjudicator.close(0, nonce, byte(1), new uint8[](2), new bytes32[](2), new bytes32[](2));
+            adjudicator.close(0, X_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
             return true;
         } else if (sum == O * 3) {
-            adjudicator.close(0, nonce, byte(2), new uint8[](2), new bytes32[](2), new bytes32[](2));
+            adjudicator.close(0, O_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
             return true;
         }
 
         //checking if there's a tie
         x = 0;
         y = 0;
-        for (i = 0; i < 3 * 3; i++) {
-            if (state[i] == byte(X)) {
+        for (i = 0; i < 9; i++) {
+            if (board[i] == byte(X)) {
                 x++;
-            } else if (state[i] == byte(Y)) {
+            } else if (board[i] == byte(O)) {
                 y++;
             }
         }
 
         // what happens if someone isn't being honest??
+        //check if the board is invalid
+        //WRITE SOME EXPOSURES CODE HERE!
+        //ALSO, test to see if this shit actually works lmao
         if (x + y == 9) {
-            adjudicator.close(0, nonce, byte(0), new uint8[](2), new bytes32[](2), new bytes32[](2));
+            adjudicator.close(0, TIE, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
         }
     }
 }

@@ -58,10 +58,10 @@ contract Adjudicator is Owned {
      * Checks signatures and updates the state as necessary.
      * It is onlyOwner because the Rules contract which owns this should
      * be able to enforce its rules by passing in different requiredSignators arguments.
-	 *
-	 * If requiredSignators is 0, the nonce can be equal to the old nonce because,
-	 * in this case, we are assuming that Rules is making a ruling on something and, thus,
-	 * it updates the state without updating the nonce.
+     *
+     * If requiredSignators is 0, the nonce can be equal to the old nonce because,
+     * in this case, we are assuming that Rules is making a ruling on something and, thus,
+     * it updates the state without updating the nonce.
      *
      * requiredSignators: number of signatures required to be valid
      * data: the data which will become the next state if everything is valid
@@ -155,6 +155,10 @@ contract Adjudicator is Owned {
         }
 
         return false;
+    }
+
+    function cancelClose() external onlyOwner {
+        lastTimestamp = 0;
     }
 
     // kills the contract

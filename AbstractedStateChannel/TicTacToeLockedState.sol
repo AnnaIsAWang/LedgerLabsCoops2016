@@ -7,12 +7,32 @@ import "LockedStateWithFunds.sol";
  */
 contract TicTacToeLockedState is LockedState {
 
-    // byte mapping for state
-    // 0 - is a tie
-    // 1 - X wins
-    // 2 - O wins
-    // 3 - X wins (O cheated)
-    // 4 - O wins (X cheated)
+    /* bit mappings for state
+     * 0: X gets winnings
+     * 1: O gets winnings
+     * 2: X forfeits deposit 1
+     * 3: O forfeits deposit 1
+     * 4: X forfeits deposit 2
+     * 5: O forfeits deposit 2
+     */
+    address addressX;
+    address addressO;
+    address burner = 0;
+
+    uint[6] funds;
+
+    function TicTacToeLockedState(address _addressX, address _addressO) {
+        addressX = _addressX;
+        addressO = _addressO;
+    }
+
+    function deposit(uint account) {
+        if (account >= 6) {
+            throw;
+        } else {
+            funds[account] += msg.value;
+        }
+    }
 
     /**
      * Checks if a given state is valid.
@@ -23,8 +43,8 @@ contract TicTacToeLockedState is LockedState {
      */
     function checkState(bytes state) constant returns (bool) {
         if (state.length == 1) {
-            uint uintState = uint(state[0]);
-            return 0 <= uintState && uintState <= 4;
+            uint8 uintState = uint(state[0]);
+            return uintState & 0x03 != 0x03
         } else {
             return false;
         }
@@ -41,40 +61,39 @@ contract TicTacToeLockedState is LockedState {
             return false;
         }
 
-        uint uintState =  uint(state[0]);
-        if (uintState == 0) {
-            if (addressX.send(this.balance / 2)) {
-                throw;
-            }
-            if (addressO.send(this.balance)) {
-                throw;
-            }
-        } else if (uintState == 1) {
-            if (addressO.send(this.balance / 4)) {
-                throw;
-            }
-            if (addressX.send(this.balance)) {
-                throw;
-            }
-        } else if (uintState == 2) {
-            if (addressX.send(this.balance / 4)) {
-                throw;
-            }
-            if (addressO.send(this.balance)) {
-                throw;
-            }
-        } else if (uintState == 3) {
-             if (addressX.send(this.balance)) {
-                throw;
-             }
-        } else if (uintState == 4) {
-            if (addressO.send(this.balance)) {
-                throw;
-            }
+        uint sendToX = 0;
+        uint sendToO = 0;
+
+        uint uintState = uint(state[0]);
+
+        if (uintState & 0x03 == 0x01) {
+            sendToX += funds[0] + funds[1];
+        } else if (uintState & 0x03 == 0x02) {
+            sendToO += funds[0] + funds[1];
         } else {
+            sendToX += funds[0];
+            sendToO += funds[1];
+        }
+
+        sendToX += (uintState & 0x04 == 0 ? funds[2] : 0) + (uintState & 0x10 == 0 ? funds[4] : 0);
+        sendToO += (uintState & 0x08 == 0 ? funds[3] : 0) + (uintState & 0x20 == 0 ? funds[5] : 0);
+
+        if (!addressX.send(sendToX)) {
+            throw;
+        }
+
+        if (!addressO.send(sendToO)) {
+            throw;
+        }
+
+        if (!burner.send(this.balance)) {
             throw;
         }
 
         return true;
+    }
+
+    function () {
+        throw;
     }
 }
