@@ -14,6 +14,14 @@ contract TicTacToeLockedState is LockedState {
     // 3 - X wins (O cheated)
     // 4 - O wins (X cheated)
 
+    address addressX;
+    address addressO;
+
+    function TicTacToeLockedState(address _addressX, address _addressO) {
+        addressX = _addressX;
+        addressO = _addressO;
+    }
+
     /**
      * Checks if a given state is valid.
      * Must be a bytes1 that holds the specified values above.
@@ -41,7 +49,7 @@ contract TicTacToeLockedState is LockedState {
             return false;
         }
 
-        uint uintState =  uint(state[0]);
+        uint uintState = uint(state[0]);
         if (uintState == 0) {
             if (addressX.send(this.balance / 2)) {
                 throw;
@@ -64,9 +72,9 @@ contract TicTacToeLockedState is LockedState {
                 throw;
             }
         } else if (uintState == 3) {
-             if (addressX.send(this.balance)) {
+            if (addressX.send(this.balance)) {
                 throw;
-             }
+            }
         } else if (uintState == 4) {
             if (addressO.send(this.balance)) {
                 throw;
