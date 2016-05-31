@@ -3,34 +3,43 @@
 		<title>Cool Ethereum-Based Identity Management System</title>
 		<script src="web3.js/dist/web3.min.js"></script>
 		<script src="Identity.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles.css">
 	</head>
 	<body>
 		<h1>Cool Ethereum-Based Identity Management System</h1>
-		<hr />
+		<div class="box">
 		<h2>Registration</h2>
 		<form name="registerForm" action="" method="GET">
 			Username:
-			<input type="text" name="username" /><br />
-			<input type="button" value="Register" onClick="register(this.form)" /><br />
+			<input type="text" name="username" class="userio"/><br />
+			<input type="button" value="Register" onClick="register(this.form)" class="button"/><br />
 		</form>
-		<hr />
+		</div>
+		
+		<br />		
+
+		<div class="box">
 		<h2>Owner Changing</h2>
 		<form name="changeOwnerForm" action="" method="GET">
 			Username:
-			<input type="text" name="username" /><br />
+			<input type="text" name="username" class="userio"/><br />
 			New Address:
-			<input type="text" name="address" /><br />
-			<input type="button" value="Change Owner" onClick="changeOwner(this.form)" /><br />
+			<input type="text" name="address" class="userio"/><br />
+			<input type="button" value="Change Owner" onClick="changeOwner(this.form)" class="button"/><br />
 		</form>
-		<hr />
+		</div>
+
+		<br />
+
+		<div class="box">
 		<h2>Owner Getting</h2>
 		<form name="ownerGettingForm" action="" method="GET">
 			Username:
-			<input type="text" name="username" /><br />
-			<input type="button" value="Get Owner" onClick="getCurrentOwner(this.form)" /><br />
+			<input type="text" name="username" class="userio"/><br />
+			<input type="button" value="Get Owner" onClick="getCurrentOwner(this.form)" class="button"/><br />
 		</form>
-		<hr />
-		Denton sucks at UI.
+		</div>
+		<br /> &#xA9 LedgerLabs2016
 	</body>
 </html>
 

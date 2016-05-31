@@ -1,0 +1,34 @@
+body {
+	text-align: center;
+	background-image: url("gradient.png");
+	background-size: 1400px 800px;
+}
+
+h1 {
+	font-size: 38px;
+}
+
+div.box {
+	border: solid 5px #000080;
+	width: 500px;
+	margin-left: 400px;
+	background-color: #00BFFF;
+}
+
+.userio {
+	background-color: lightblue;
+	border-color: #000080;
+	margin: 5px;
+}
+
+.button {
+	background-color: #7FFFD4;
+	border-style: none;
+	padding: 8px;
+	font-size: 15px;
+}
+
+.button:hover {
+	background-color: #40E0D0;
+	color: #000080;
+}
