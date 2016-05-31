@@ -32,14 +32,14 @@ function list() {
 }
 
 function updateGrid(grid) {
-	for (var i = 0; i < 3; ++i) {
-		for (var j = 0; j < 3; ++j) {
-			if (grid[j + 3 * i] == 0) {
-				document.write('<input type="button" id='+(j + 3 * i)+' onClick="scream(this.id)" value=" "'+'<br>');
-			} else if (grid[j + 3 * i] == 1) {
-				document.write('<input type="button" id='+(j + 3 * i)+' onClick="scream(this.id)" value="X"'+'<br>');
-			} else if (grid[j + 3 * i] == 2) {
-				document.write('<input type="button" id='+(j + 3 * i)+' onClick="scream(this.id)" value="O"'+'<br>');
+	for (var i = 0; i < ttt.gridSize; ++i) {
+		for (var j = 0; j < ttt.gridSize; ++j) {
+			if (grid[j + ttt.gridSize * i] == 0) {
+				document.write('<input type="button" id='+(j + ttt.gridSize * i)+' onClick="scream(this.id)" value=" "'+'<br>');
+			} else if (grid[j + ttt.gridSize * i] == 1) {
+				document.write('<input type="button" id='+(j + ttt.gridSize * i)+' onClick="scream(this.id)" value="X"'+'<br>');
+			} else if (grid[j + ttt.gridSize * i] == 2) {
+				document.write('<input type="button" id='+(j + ttt.gridSize * i)+' onClick="scream(this.id)" value="O"'+'<br>');
 			}
 		}
 		document.write('<br>');
