@@ -1,0 +1,123 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="testCases2.css">
+	</head>
+
+	<body>
+		<script>
+			function condition() {
+				var row = document.getElementById("info").insertRow(1);
+				var txNumber = row.insertCell(0);
+				txNumber.innerHTML = "0";
+				var data = row.insertCell(1);
+				data.innerHTML = "Alice sends Bob 10 ethers on a condition";
+				var signatures = row.insertCell(2);
+				signatures.innerHTML = "Missing Bob's signature";
+				var commitmentStatus = row.insertCell(3);
+				commitmentStatus.innerHTML = "Incomplete";
+				var onBlockchain = row.insertCell(4);
+				onBlockchain.innerHTML = "No";
+				document.getElementById("button2").value = "See what happens when Bob agrees to this";
+				document.getElementById("button2").onclick = agree;
+			}
+
+			function agree() {
+				document.getElementById("info").deleteRow(1);
+				var row = document.getElementById("info").insertRow(1);
+				var txNumber = row.insertCell(0);
+				txNumber.innerHTML = "0";
+				var data = row.insertCell(1);
+				data.innerHTML = "Alice sends Bob 10 ethers on a condition";
+				var signatures = row.insertCell(2);
+				signatures.innerHTML = "Both parties signed";
+				var commitmentStatus = row.insertCell(3);
+				commitmentStatus.innerHTML = "Incomplete";
+				var onBlockchain = row.insertCell(4);
+				onBlockchain.innerHTML = "No";
+				document.getElementById("button2").value = "See what happens when Bob fulfills the commitment";
+				document.getElementById("button2").onclick = fulfill;
+			}
+
+			function fulfill() {
+				document.getElementById("info").deleteRow(1);
+				var row = document.getElementById("info").insertRow(1);
+				var txNumber = row.insertCell(0);
+				txNumber.innerHTML = "0";
+				var data = row.insertCell(1);
+				data.innerHTML = "Alice sends Bob 10 ethers on a condition";
+				var signatures = row.insertCell(2);
+				signatures.innerHTML = "Both parties signed";
+				var commitmentStatus = row.insertCell(3);
+				commitmentStatus.innerHTML = "Complete";
+				var onBlockchain = row.insertCell(4);
+				onBlockchain.innerHTML = "No";
+				var row = document.getElementById("info").insertRow(2);
+				var txNumber2 = row.insertCell(0);
+				txNumber2.innerHTML = "1";
+				var data2 = row.insertCell(1);
+				data2.innerHTML = "Alice pays Bob 10 ethers";
+				var signatures2 = row.insertCell(2);
+				signatures2.innerHTML = "Missing Alice's signature";
+				var commitmentStatus2 = row.insertCell(3);
+				commitmentStatus2.innerHTML = "N/A";
+				var onBlockchain2 = row.insertCell(4);
+				onBlockchain2.innerHTML = "No";
+				document.getElementById("button2").value = "See what happens when Alice agrees to the new transaction";
+				document.getElementById("button2").onclick = finalApprove;
+			}
+
+			function finalApprove() {
+				document.getElementById("info").deleteRow(2);
+				var row = document.getElementById("info").insertRow(2);
+				var txNumber = row.insertCell(0);
+				txNumber.innerHTML = "1";
+				var data = row.insertCell(1);
+				data.innerHTML = "Alice pays Bob 10 ethers";
+				var signatures = row.insertCell(2);
+				signatures.innerHTML = "Both parties signed";
+				var commitmentStatus = row.insertCell(3);
+				commitmentStatus.innerHTML = "N/A";
+				var onBlockchain = row.insertCell(4);
+				onBlockchain.innerHTML = "No";
+				document.getElementById("button2").value = "See what happens when Bob cashes out";
+				document.getElementById("button2").onclick = cashOut;
+			}
+
+			function cashOut() {
+				document.getElementById("info").deleteRow(2);
+				var row = document.getElementById("info").insertRow(2);
+				var txNumber = row.insertCell(0);
+				txNumber.innerHTML = "1";
+				var data = row.insertCell(1);
+				data.innerHTML = "Alice pays Bob 10 ethers";
+				var signatures = row.insertCell(2);
+				signatures.innerHTML = "Both parties signed";
+				var commitmentStatus = row.insertCell(3);
+				commitmentStatus.innerHTML = "N/A";
+				var onBlockchain = row.insertCell(4);
+				onBlockchain.innerHTML = "Yes";
+				document.getElementById("button2").value = "Redo Simulation";
+				document.getElementById("button2").onclick = clear;
+			}
+
+			function clear() {
+				document.getElementById("info").deleteRow(2);
+				document.getElementById("info").deleteRow(1);
+				document.getElementById("button2").value = "See what happens when Alice sends Bob money with a commitment";
+				document.getElementById("button2").onclick = condition;
+			}
+		</script>
+		<h1> Alice and Bob's State Channel </h1>
+		<table id="info">
+			<tr>
+				<th> Transaction Number </th>
+				<th> Data </th>
+				<th> Signatures </th>
+				<th> Commitment Status </th>
+				<th> On Blockchain </th>
+			</tr>
+		</table>
+		<br>
+		<input type=button id="button2" value="See what happens when Alice sends Bob money with a commitment" onclick="condition()" class="next">
+	</body>
+</html>

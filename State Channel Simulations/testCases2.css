@@ -1,0 +1,42 @@
+body {
+	text-align: center;
+	background-color: #F8F8FF;
+}
+
+h1 {
+	font-size: 40px;
+}
+
+table {
+	border-collapse: collapse;
+	margin-left: 40px;
+}
+
+table, tr, td {
+	width: 1200px;
+	border: 2px solid black;
+	text-align: center;
+	background-color: #F5DEB3;
+}
+
+th {
+	font-weight: bold;
+	font-size: 25px;
+	border: 2px solid black;
+	background-color: #F4A460;
+}
+
+.next {
+	padding: 10px;
+	background-color: #7FFF00;
+	border: none;
+	font-size: 20px;
+}
+
+.next:hover {
+	background-color: #ADFF2F;
+}
+
+.next:active {
+	background-color: #ADFF2F;
+}
