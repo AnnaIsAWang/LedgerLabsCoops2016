@@ -16,7 +16,7 @@ contract TicTacToeRules is Rules {
     uint constant X = 1;
     uint constant O = 4;
 
-    uint lastValidSender;
+    uint lastSender;
     address addressX;
     address addressO;
     uint timeout;
@@ -60,13 +60,17 @@ contract TicTacToeRules is Rules {
         return adjudicator.close(2, state, nonce, v, r, s);
     }
 
-    function unilateralRuling(uint8 uintState, uint nonce) internal returns (bool) {
+    function unilateralRuling(uint8 uintState, uint nonce, uint sender) internal returns (bool worked) {
         bytes state = new bytes(1);
         state[0] = byte(uintState);
-        return adjudicator.close(0, state, nonce, new uint8[](1), new bytes32(1), new bytes32(1));
+        worked = adjudicator.close(0, state, nonce, new uint8[](1), new bytes32(1), new bytes32(1));
+        if (worked) {
+            lastSender = sender;
+        }
     }
 
     function sendBoard(
+        uint sender,
         bytes10 board,
         uint nonce,
         uint8 vX,
@@ -82,10 +86,18 @@ contract TicTacToeRules is Rules {
         uint y;
 
         if (
-            !((currentLastSender == X && addressX == ecrecover(hash, vX, rX, sX))
-            || (currentLastSender == O && addressO == ecrecover(hash, vO, rO, sO)))
+            !((currentLastSender == X && addressX == ecrecover(sha3(sender, board, nonce), vX, rX, sX))
+            || (currentLastSender == O && addressO == ecrecover(sha3(sender, board, nonce), vO, rO, sO)))
         ) {
             return false;
+        }
+
+        if (lastSender != 0) {
+                return unilateralRuling(
+                    lastSender == X ? 0x1E : 0x2D,
+                    nonce,
+                    sender
+                );
         }
 
         x = 0;
@@ -98,16 +110,17 @@ contract TicTacToeRules is Rules {
             } else if (board[i] != BLANK) {//invalid symbol, someone cheated
                 return unilateralRuling(
                     currentLastSender == X ? 0x1E : 0x2D,
-                    nonce
+                    nonce,
+                    sender
                 );
             }
         }
         if (x + y == 9) {// tie
-            return unilateralRuling(0x0C, nonce);
+            return unilateralRuling(0x0C, nonce, sender);
         } else if (currentLastSender == X && x - y != 1) {// X cheated
-            return unilateralRuling(0x1E, nonce);
+            return unilateralRuling(0x1E, nonce, sender);
         } else if (currentLastSender == O && x - y != 0) {// O cheated
-            return unilateralRuling(0x2D, nonce);
+            return unilateralRuling(0x2D, nonce, sender);
         }
 
         //checking |
@@ -117,9 +130,9 @@ contract TicTacToeRules is Rules {
                 i += uint(board[gridToIndex(x, y)]);
             }
             if (i == X * 3) {
-                return unilateralRuling(0x0D, nonce);
+                return unilateralRuling(0x0D, nonce, sender);
             } else if (i == O * 3) {
-                return unilateralRuling(0x0E, nonce);
+                return unilateralRuling(0x0E, nonce, sender);
             }
         }
 
@@ -130,9 +143,9 @@ contract TicTacToeRules is Rules {
                 i += uint(board[gridToIndex(x, y)]);
             }
             if (i == X * 3) {
-                return unilateralRuling(0x0D, nonce);
+                return unilateralRuling(0x0D, nonce, sender);
             } else if (i == O * 3) {
-                return unilateralRuling(0x0E, nonce);
+                return unilateralRuling(0x0E, nonce, sender);
             }
         }
 
@@ -142,9 +155,9 @@ contract TicTacToeRules is Rules {
             i += uint(board[gridToIndex(x, x)]);
         }
         if (i == X * 3) {
-            return unilateralRuling(0x0D, nonce);
+            return unilateralRuling(0x0D, nonce, sender);
         } else if (i == O * 3) {
-            return unilateralRuling(0x0E, nonce);
+            return unilateralRuling(0x0E, nonce, sender);
         }
 
         //checking /
@@ -153,14 +166,15 @@ contract TicTacToeRules is Rules {
             i += uint(board[gridToIndex(x, 2 - x)]);
         }
         if (i == X * 3) {
-            return unilateralRuling(0x0D, nonce);
+            return unilateralRuling(0x0D, nonce, sender);
         } else if (i == O * 3) {
-            return unilateralRuling(0x0E, nonce);
+            return unilateralRuling(0x0E, nonce, sender);
         }
 
         return unilateralRuling(
             currentLastSender == X ? 0x1E : 0x2D,
-            nonce
+            nonce,
+            sender
         );
     }
 }
