@@ -1,2 +1,2 @@
 # LedgerLabsCoops2016
-Actual readme content coming soon!
+A repository for all of the work that the two co-ops at Ledger Labs of Spring 2016 made.
