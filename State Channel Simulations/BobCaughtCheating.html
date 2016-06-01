@@ -5,17 +5,35 @@
 	</head>
 
 	<script>
-		function restart() {
-			document.getElementById("button1").value = "See what happens when Alice and Bob start a state channel";
-			document.getElementById("button1").onclick = ABstart;
+		function ABstart() {
+			var row = document.getElementById("info").insertRow(1);
+			var channelNumber = row.insertCell(0);
+			channelNumber.innerHTML = "0";
+			var participantAddresses = row.insertCell(1);
+			participantAddresses.innerHTML = "0x1, 0x2";
+			var lastTransaction = row.insertCell(2);
+			lastTransaction.innerHTML = "N/A";
+			var lastModified = row.insertCell(3);
+			lastModified.innerHTML = "N/A";
+			document.getElementById("button1").value = "See what happens when Alice disappears and Bob cheats";
+			document.getElementById("button1").onclick = Bcheats;
 		}
-
-		function ABdone() {
+		
+		function Bcheats() {
 			document.getElementById("info").deleteRow(1);
-			document.getElementById("button1").value = "Redo Simulation";
-			document.getElementById("button1").onclick = restart;
-		}
-
+			var row = document.getElementById("info").insertRow(1);
+			var channelNumber = row.insertCell(0);
+			channelNumber.innerHTML = "0";
+			var participantAddresses = row.insertCell(1);
+			participantAddresses.innerHTML = "0x1, 0x2";
+			var lastTransaction = row.insertCell(2);
+			lastTransaction.innerHTML = "4";
+			var lastModified = row.insertCell(3);
+			lastModified.innerHTML = Date();
+			document.getElementById("button1").value = "See what happens when Alice comes back and reports Bob";
+			document.getElementById("button1").onclick = Areports;
+		}	
+		
 		function Areports() {
 			document.getElementById("info").deleteRow(1);
 			var row = document.getElementById("info").insertRow(1);
@@ -30,34 +48,16 @@
 			document.getElementById("button1").value = "See what happens when the state channel closes";
 			document.getElementById("button1").onclick = ABdone;
 		}
-
-		function Bcheats() {
+		
+		function ABdone() {
 			document.getElementById("info").deleteRow(1);
-			var row = document.getElementById("info").insertRow(1);
-			var channelNumber = row.insertCell(0);
-			channelNumber.innerHTML = "0";
-			var participantAddresses = row.insertCell(1);
-			participantAddresses.innerHTML = "0x1, 0x2";
-			var lastTransaction = row.insertCell(2);
-			lastTransaction.innerHTML = "4";
-			var lastModified = row.insertCell(3);
-			lastModified.innerHTML = Date();
-			document.getElementById("button1").value = "See what happens when Alice comes back and reports Bob";
-			document.getElementById("button1").onclick = Areports;
-		}		
-
-		function ABstart() {
-			var row = document.getElementById("info").insertRow(1);
-			var channelNumber = row.insertCell(0);
-			channelNumber.innerHTML = "0";
-			var participantAddresses = row.insertCell(1);
-			participantAddresses.innerHTML = "0x1, 0x2";
-			var lastTransaction = row.insertCell(2);
-			lastTransaction.innerHTML = "N/A";
-			var lastModified = row.insertCell(3);
-			lastModified.innerHTML = "N/A";
-			document.getElementById("button1").value = "See what happens when Alice disappears and Bob cheats";
-			document.getElementById("button1").onclick = Bcheats;
+			document.getElementById("button1").value = "Redo Simulation";
+			document.getElementById("button1").onclick = restart;
+		}
+		
+		function restart() {
+			document.getElementById("button1").value = "See what happens when Alice and Bob start a state channel";
+			document.getElementById("button1").onclick = ABstart;
 		}
 	</script>
 
