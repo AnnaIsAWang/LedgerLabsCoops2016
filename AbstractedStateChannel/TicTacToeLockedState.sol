@@ -10,10 +10,11 @@ contract TicTacToeLockedState is LockedState {
     /* bit mappings for state
      * 0: X gets winnings
      * 1: O gets winnings
-     * 2: X forfeits deposit 1
-     * 3: O forfeits deposit 1
-     * 4: X forfeits deposit 2
-     * 5: O forfeits deposit 2
+     * 2: X forfeits adjudication deposit
+     * 3: O forfeits adjudication deposit
+     * 4: X forfeits disconnect deposit
+     * 5: O forfeits disconnect deposit
+     * note, if tie, bits 0 and 1 should both be 0 to indicate tie
      */
     address addressX;
     address addressO;
@@ -43,8 +44,7 @@ contract TicTacToeLockedState is LockedState {
      */
     function checkState(bytes state) constant returns (bool) {
         if (state.length == 1) {
-            uint8 uintState = uint(state[0]);
-            return uintState & 0x03 != 0x03
+            return uint8(state[0]) & 0x03 != 0x03;
         } else {
             return false;
         }

@@ -7,19 +7,16 @@ import "TicTacToeAdjudicator.sol";
  *  3 | 4 | 5
  *  ---------
  *  6 | 7 | 8
+ *
+ * 9: 4 if last player was O, 1 if the last player was X
  */
 contract TicTacToeRules is Rules {
 
-    uint constant NONE = 0;
+    uint constant BLANK = 0;
     uint constant X = 1;
     uint constant O = 4;
 
-    bytes TIE;
-    bytes X_WINS;
-    bytes O_WINS;
-    bytes X_SUPER_WINS;
-    bytes O_SUPER_WINS;
-
+    uint lastSender;
     address addressX;
     address addressO;
     uint timeout;
@@ -28,22 +25,10 @@ contract TicTacToeRules is Rules {
         addressX = _addressX;
         addressO = _addressO;
         timeout = _timeout;
-        TIE = new bytes(1);
-        X_WINS = new bytes(1);
-        O_WINS = new bytes(1);
-        X_SUPER_WINS = new bytes(1);
-        O_SUPER_WINS = new bytes(1);
-        TIE[0] = byte(0);
-        X_WINS[0] = byte(1);
-        O_WINS[0] = byte(2);
-        X_SUPER_WINS[0] = byte(3);
-        O_SUPER_WINS[0] = byte(4);
     }
 
-    function createAdjudicator() internal returns (Adjudicator adjudicator) {
-        adjudicator = new TicTacToeAdjudicator(addressX, addressO, timeout);
-        delete addressX;
-        delete addressO;
+    function createAdjudicator() internal returns (Adjudicator newAdjudicator) {
+        newAdjudicator = new TicTacToeAdjudicator(addressX, addressO, timeout);
         delete timeout;
     }
 
@@ -54,125 +39,141 @@ contract TicTacToeRules is Rules {
     function sendState(
         bytes state,
         uint nonce,
-        uint8 v1,
-        bytes32 r1,
-        bytes32 s1,
-        uint8 v2,
-        bytes32 r2,
-        bytes32 s2
+        uint8 vX,
+        bytes32 rX,
+        bytes32 sX,
+        uint8 vO,
+        bytes32 rO,
+        bytes32 sO
     ) external returns (bool) {
         uint8[] memory v = new uint8[](2);
         bytes32[] memory r = new bytes32[](2);
         bytes32[] memory s = new bytes32[](2);
 
-        v[0] = v1;
-        v[1] = v2;
-        r[0] = r1;
-        r[1] = r2;
-        s[0] = s1;
-        s[1] = s2;
+        v[0] = vX;
+        v[1] = vO;
+        r[0] = rX;
+        r[1] = rO;
+        s[0] = sX;
+        s[1] = sO;
 
         return adjudicator.close(2, state, nonce, v, r, s);
     }
 
+    function unilateralRuling(uint8 uintState, uint nonce, uint sender) internal returns (bool worked) {
+        bytes memory state = new bytes(1);
+        state[0] = byte(uintState);
+        worked = adjudicator.close(0, state, nonce, new uint8[](1), new bytes32[](1), new bytes32[](1));
+        if (worked) {
+            lastSender = sender;
+        }
+    }
+
     function sendBoard(
-        bytes9 board,
+        uint sender,
+        bytes10 board,
         uint nonce,
-        uint8 v1,
-        bytes32 r1,
-        bytes32 s1,
-        uint8 v2,
-        bytes32 r2,
-        bytes32 s2
+        uint8 vX,
+        bytes32 rX,
+        bytes32 sX,
+        uint8 vO,
+        bytes32 rO,
+        bytes32 sO
     ) external returns (bool) {
-        uint sum;
         uint i;
         uint x;
         uint y;
-        uint8[] memory v = new uint8[](2);
-        bytes32[] memory r = new bytes32[](2);
-        bytes32[] memory s = new bytes32[](2);
 
-        v[0] = v1;
-        v[1] = v2;
-        r[0] = r1;
-        r[1] = r2;
-        s[0] = s1;
-        s[1] = s2;
+        if (
+            !((uint(board[9]) == X && addressX == ecrecover(sha3(sender, board, nonce), vX, rX, sX))
+            || (uint(board[9]) == O && addressO == ecrecover(sha3(sender, board, nonce), vO, rO, sO)))
+        ) {
+            return false;
+        }
+
+        if (lastSender != 0) {
+                return unilateralRuling(
+                    lastSender == X ? 0x1E : 0x2D,
+                    nonce,
+                    sender
+                );
+        }
+
+        x = 0;
+        y = 0;
+        for (i = 0; i < 9; i++) {
+            if (uint(board[i]) == X) {
+                x++;
+            } else if (uint(board[i]) == O) {
+                y++;
+            } else if (uint(board[i]) != BLANK) {//invalid symbol, someone cheated
+                return unilateralRuling(
+                    uint(board[9]) == X ? 0x1E : 0x2D,
+                    nonce,
+                    sender
+                );
+            }
+        }
+        if (x + y == 9) {// tie
+            return unilateralRuling(0x0C, nonce, sender);
+        } else if (uint(board[9]) == X && x - y != 1) {// X cheated
+            return unilateralRuling(0x1E, nonce, sender);
+        } else if (uint(board[9]) == O && x - y != 0) {// O cheated
+            return unilateralRuling(0x2D, nonce, sender);
+        }
 
         //checking |
         for (x = 0; x < 3; x++) {
-            sum = 0;
+            i = 0;
             for (y = 0; y < 3; y++) {
-                sum += uint(board[gridToIndex(x, y)]);
+                i += uint(board[gridToIndex(x, y)]);
             }
-            if (sum == X * 3) {
-                adjudicator.close(0, X_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
-                return true;
-            } else if (sum == O * 3) {
-                adjudicator.close(0, O_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
-                return true;
+            if (i == X * 3) {
+                return unilateralRuling(0x0D, nonce, sender);
+            } else if (i == O * 3) {
+                return unilateralRuling(0x0E, nonce, sender);
             }
         }
 
         //checking -
         for (y = 0; y < 3; y++) {
-            sum = 0;
+            i = 0;
             for (x = 0; x < 3; x++) {
-                sum += uint(board[gridToIndex(x, y)]);
+                i += uint(board[gridToIndex(x, y)]);
             }
-            if (sum == X * 3) {
-                adjudicator.close(0, X_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
-                return true;
-            } else if (sum == O * 3) {
-                adjudicator.close(0, O_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
-                return true;
+            if (i == X * 3) {
+                return unilateralRuling(0x0D, nonce, sender);
+            } else if (i == O * 3) {
+                return unilateralRuling(0x0E, nonce, sender);
             }
         }
 
         //checking \
-        sum = 0;
+        i = 0;
         for (x = 0; x < 3; x++) {
-            sum += uint(board[gridToIndex(x, x)]);
+            i += uint(board[gridToIndex(x, x)]);
         }
-        if (sum == X * 3) {
-            adjudicator.close(0, X_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
-            return true;
-        } else if (sum == O * 3) {
-            adjudicator.close(0, O_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
-            return true;
+        if (i == X * 3) {
+            return unilateralRuling(0x0D, nonce, sender);
+        } else if (i == O * 3) {
+            return unilateralRuling(0x0E, nonce, sender);
         }
 
         //checking /
-        sum = 0;
+        i = 0;
         for (x = 0; x < 3; x++) {
-            sum += uint(board[gridToIndex(x, 2 - x)]);
+            i += uint(board[gridToIndex(x, 2 - x)]);
         }
-        if (sum == X * 3) {
-            adjudicator.close(0, X_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
-            return true;
-        } else if (sum == O * 3) {
-            adjudicator.close(0, O_WINS, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
-            return true;
+        if (i == X * 3) {
+            return unilateralRuling(0x0D, nonce, sender);
+        } else if (i == O * 3) {
+            return unilateralRuling(0x0E, nonce, sender);
         }
 
-        //checking if there's a tie
-        x = 0;
-        y = 0;
-        for (i = 0; i < 9; i++) {
-            if (board[i] == byte(X)) {
-                x++;
-            } else if (board[i] == byte(O)) {
-                y++;
-            }
-        }
-
-        // what happens if someone isn't being honest??
-        //check if the board is invalid
-        //WRITE SOME EXPOSURES CODE HERE!
-        //ALSO, test to see if this shit actually works lmao
-        if (x + y == 9) {
-            adjudicator.close(0, TIE, nonce, new uint8[](2), new bytes32[](2), new bytes32[](2));
-        }
+        return unilateralRuling(
+            uint(board[9]) == X ? 0x1E : 0x2D,
+            nonce,
+            sender
+        );
     }
 }
