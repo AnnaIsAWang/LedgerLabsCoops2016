@@ -40,3 +40,23 @@ th {
 .next:active {
 	background-color: #ADFF2F;
 }
+
+.update {
+    background-color: #F5DEB3;
+    -webkit-animation-name: example; /* Chrome, Safari, Opera */
+    -webkit-animation-duration: 4s; /* Chrome, Safari, Opera */
+    animation-name: example;
+    animation-duration: 4s;
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes example {
+    from {background-color: #F5DEB3;}
+    to {background-color: yellow;}
+}
+
+/* Standard syntax */
+@keyframes example {
+    from {background-color: #F5DEB3;}
+    to {background-color: yellow;}
+}

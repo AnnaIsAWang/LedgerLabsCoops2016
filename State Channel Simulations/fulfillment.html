@@ -30,6 +30,8 @@
 				data.innerHTML = "Alice sends Bob 10 ethers on a condition";
 				var signatures = row.insertCell(2);
 				signatures.innerHTML = "Both parties signed";
+				signatures.setAttribute("id", "changed1");
+				document.getElementById("changed1").className = "update";
 				var commitmentStatus = row.insertCell(3);
 				commitmentStatus.innerHTML = "Incomplete";
 				var onBlockchain = row.insertCell(4);
@@ -75,6 +77,8 @@
 				data.innerHTML = "Alice pays Bob 10 ethers";
 				var signatures = row.insertCell(2);
 				signatures.innerHTML = "Both parties signed";
+				signatures.setAttribute("id", "changed2");
+				document.getElementById("changed2").className = "update";
 				var commitmentStatus = row.insertCell(3);
 				commitmentStatus.innerHTML = "N/A";
 				var onBlockchain = row.insertCell(4);
@@ -96,6 +100,8 @@
 				commitmentStatus.innerHTML = "N/A";
 				var onBlockchain = row.insertCell(4);
 				onBlockchain.innerHTML = "Yes";
+				onBlockchain.setAttribute("id", "changed3");
+				document.getElementById("changed3").className = "update";
 				document.getElementById("button2").value = "Redo Simulation";
 				document.getElementById("button2").onclick = clear;
 			}
