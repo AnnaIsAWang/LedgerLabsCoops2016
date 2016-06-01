@@ -61,9 +61,9 @@ contract TicTacToeRules is Rules {
     }
 
     function unilateralRuling(uint8 uintState, uint nonce, uint sender) internal returns (bool worked) {
-        bytes state = new bytes(1);
+        bytes memory state = new bytes(1);
         state[0] = byte(uintState);
-        worked = adjudicator.close(0, state, nonce, new uint8[](1), new bytes32(1), new bytes32(1));
+        worked = adjudicator.close(0, state, nonce, new uint8[](1), new bytes32[](1), new bytes32[](1));
         if (worked) {
             lastSender = sender;
         }
@@ -80,14 +80,13 @@ contract TicTacToeRules is Rules {
         bytes32 rO,
         bytes32 sO
     ) external returns (bool) {
-        uint currentLastSender = uint(board[9]);
         uint i;
         uint x;
         uint y;
 
         if (
-            !((currentLastSender == X && addressX == ecrecover(sha3(sender, board, nonce), vX, rX, sX))
-            || (currentLastSender == O && addressO == ecrecover(sha3(sender, board, nonce), vO, rO, sO)))
+            !((uint(board[9]) == X && addressX == ecrecover(sha3(sender, board, nonce), vX, rX, sX))
+            || (uint(board[9]) == O && addressO == ecrecover(sha3(sender, board, nonce), vO, rO, sO)))
         ) {
             return false;
         }
@@ -103,13 +102,13 @@ contract TicTacToeRules is Rules {
         x = 0;
         y = 0;
         for (i = 0; i < 9; i++) {
-            if (board[i] == X) {
+            if (uint(board[i]) == X) {
                 x++;
-            } else if (board[i] == O) {
+            } else if (uint(board[i]) == O) {
                 y++;
-            } else if (board[i] != BLANK) {//invalid symbol, someone cheated
+            } else if (uint(board[i]) != BLANK) {//invalid symbol, someone cheated
                 return unilateralRuling(
-                    currentLastSender == X ? 0x1E : 0x2D,
+                    uint(board[9]) == X ? 0x1E : 0x2D,
                     nonce,
                     sender
                 );
@@ -117,9 +116,9 @@ contract TicTacToeRules is Rules {
         }
         if (x + y == 9) {// tie
             return unilateralRuling(0x0C, nonce, sender);
-        } else if (currentLastSender == X && x - y != 1) {// X cheated
+        } else if (uint(board[9]) == X && x - y != 1) {// X cheated
             return unilateralRuling(0x1E, nonce, sender);
-        } else if (currentLastSender == O && x - y != 0) {// O cheated
+        } else if (uint(board[9]) == O && x - y != 0) {// O cheated
             return unilateralRuling(0x2D, nonce, sender);
         }
 
@@ -172,7 +171,7 @@ contract TicTacToeRules is Rules {
         }
 
         return unilateralRuling(
-            currentLastSender == X ? 0x1E : 0x2D,
+            uint(board[9]) == X ? 0x1E : 0x2D,
             nonce,
             sender
         );

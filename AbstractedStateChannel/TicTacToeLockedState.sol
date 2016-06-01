@@ -44,8 +44,7 @@ contract TicTacToeLockedState is LockedState {
      */
     function checkState(bytes state) constant returns (bool) {
         if (state.length == 1) {
-            uint8 uintState = uint(state[0]);
-            return uintState & 0x03 != 0x03
+            return uint8(state[0]) & 0x03 != 0x03;
         } else {
             return false;
         }
