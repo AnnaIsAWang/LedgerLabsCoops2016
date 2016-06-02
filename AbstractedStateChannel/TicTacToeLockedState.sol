@@ -14,6 +14,7 @@ contract TicTacToeLockedState is LockedState {
      * 3: O forfeits adjudication deposit
      * 4: X forfeits disconnect deposit
      * 5: O forfeits disconnect deposit
+     * 6: used to indicate cheating, not used here
      * note, if tie, bits 0 and 1 should both be 0 to indicate tie
      */
     address addressX;

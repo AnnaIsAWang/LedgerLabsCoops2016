@@ -170,10 +170,39 @@ contract TicTacToeRules is Rules {
             return unilateralRuling(0x0E, nonce, sender);
         }
 
+        // whoever played last wins
         return unilateralRuling(
             uint(board[9]) == X ? 0x1E : 0x2D,
             nonce,
             sender
         );
+    }
+
+    function badBoardSent() {
+        // implement the signature checking and all that fun bullshit over here please
+        //oldBoard and newBoard???
+        bool notChanged = true;
+        for (uint i = 0; i < 9; i++) {
+            if (oldBoard[i] == newBoard[i]) {
+                break;
+            }
+            if (oldBoard[i] != newBoard[i] && oldBoard[i] == BLANK && notChanged && newBoard[i] == newBoard[9]) {
+                notChanged = false;
+                break;
+            }
+            //shenanigans
+        }
+        if (notChanged) {
+            //shenanigans!
+        } else {
+            //no shenanigans
+        }
+    }
+
+    function checkIn(uint player, uint nonce) {
+        uint8 uintState = uint8(adjudicator.getState()[0]);
+        if (nonce == adjudicator.getNonce() && uintState & 0x40 == 0) {
+            uintState = uintState & 0xCF | 0x0C;
+        }
     }
 }
