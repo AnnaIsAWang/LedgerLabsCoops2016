@@ -1,27 +1,29 @@
 <html>
 	<head>
-		<center> <h1 style="color:red"> Tic Tac Toe Game! </h1> 
+		<center> <h1> Tic Tac Toe Game! </h1> 
 		<img src="ttt.png" alt="Wanted: Pretty picture" style="width:400; height:400;">
 		<script src="web3.js/dist/web3.min.js"></script>
 		<script src="tictactoe.js"></script>
+		<link rel="stylesheet" type="text/css" href="ttt.css">
 		</center>
 	</head>
 
 	<body>
 		<center>
 		<form>
-			<h2> Want to play? Then put some ether at stake! </h2>
-			<input name="bet" type=Text>
-			<input name="submit" type=Button value="Offer to Play a Game">
+			<h2> If you wanna play, you gotta pay (ethers only) </h2>
+			<input name="bet" type=Text class="text" placeholder="How many ethers would you like to bet?">
+			<input name="submit" type=Button value="Offer to Play a Game" onClick="newGame(this)" class="button">
 		</form>
 
 		<h2> Challenges You Can Accept </h2>
-		<input name="exampleChallenge" type=Button value="See challenges" onClick="list()">
+		<input name="exampleChallenge" type=Button value="See challenges" onClick="list()" class="button">
 
 		<h2> Active Games </h2>
-		<input type="button" value="Click here for your active games" onClick="blocks()">
+		<input type="button" value="Click here for your active games" onClick="blocks()" class="button">
 
 		</center>
+
 	</body>
 
 </html>

@@ -31,15 +31,15 @@ function list() {
 		document.write('<input type="button" value="Accept" onClick="joinGame('+info[k]+')>');
 }
 
-function updateGrid(grid) {
+function updateGrid(grid, gameID) {
 	for (var i = 0; i < ttt.gridSize; ++i) {
 		for (var j = 0; j < ttt.gridSize; ++j) {
 			if (grid[j + ttt.gridSize * i] == 0) {
-				document.write('<input type="button" id='+(j + ttt.gridSize * i)+' onClick="scream(this.id)" value=" "'+'<br>');
+				document.write('<input type="button" id='+(j + ttt.gridSize * i)+' onClick="move(this.id, this.value, gameID)" value=" "'+'<br>');
 			} else if (grid[j + ttt.gridSize * i] == 1) {
-				document.write('<input type="button" id='+(j + ttt.gridSize * i)+' onClick="scream(this.id)" value="X"'+'<br>');
+				document.write('<input type="button" id='+(j + ttt.gridSize * i)+' value="X"'+'<br>');
 			} else if (grid[j + ttt.gridSize * i] == 2) {
-				document.write('<input type="button" id='+(j + ttt.gridSize * i)+' onClick="scream(this.id)" value="O"'+'<br>');
+				document.write('<input type="button" id='+(j + ttt.gridSize * i)+' value="O"'+'<br>');
 			}
 		}
 		document.write('<br>');
@@ -55,7 +55,7 @@ function blocks() {
 	for (var m = 0; m < length - 1; m += 2) {
 		document.write('<p> Game '+mine[m]+' with '+mine[m+1]/(10**18)+' ethers at stake </p>');
 		var grid = getState(mine[m]);
-		updateGrid(grid);
+		updateGrid(grid, mine[m]);
 	document.write('<br>');
 	}
 }
