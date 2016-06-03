@@ -109,8 +109,8 @@ contract TicTacToeRules is Rules {
         uint8 uintState = uint(board[9]) == X ? 0x28 : 0x14;// by default, the person who didn't play will lose all deposits
 
         if (
-            !((uint(board[9]) == X && addressX == ecrecover(sha3(board, nonce), v, r, s))
-            || (uint(board[9]) == O && addressO == ecrecover(sha3(board, nonce), v, r, s)))
+            !((uint(board[9]) == X && addressX == ecrecover(sha3(board, nonce, this), v, r, s))
+            || (uint(board[9]) == O && addressO == ecrecover(sha3(board, nonce, this), v, r, s)))
         ) {
             return false;
         }
@@ -201,16 +201,16 @@ contract TicTacToeRules is Rules {
     ) external returns (bool) {
         // verify the integrity of oldBoard
         if (
-            !((uint(oldBoard[9]) == X && addressX == ecrecover(sha3(oldBoard, oldNonce), oldV, oldR, oldS))
-            || (uint(oldBoard[9]) == O && addressO == ecrecover(sha3(oldBoard, oldNonce), oldV, oldR, oldS)))
+            !((uint(oldBoard[9]) == X && addressX == ecrecover(sha3(oldBoard, oldNonce, this), oldV, oldR, oldS))
+            || (uint(oldBoard[9]) == O && addressO == ecrecover(sha3(oldBoard, oldNonce, this), oldV, oldR, oldS)))
         ) {
             return false;
         }
 
         // verify the integrity of newBoard
         if (
-            !((uint(newBoard[9]) == X && addressX == ecrecover(sha3(newBoard, newNonce), newV, newR, newS))
-            || (uint(newBoard[9]) == O && addressO == ecrecover(sha3(newBoard, newNonce), newV, newR, newS)))
+            !((uint(newBoard[9]) == X && addressX == ecrecover(sha3(newBoard, newNonce, this), newV, newR, newS))
+            || (uint(newBoard[9]) == O && addressO == ecrecover(sha3(newBoard, newNonce, this), newV, newR, newS)))
         ) {
             return false;
         }
