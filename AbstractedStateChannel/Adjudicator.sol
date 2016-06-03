@@ -45,8 +45,19 @@ contract Adjudicator is Owned {
     // An abstract method which should create and return a LockedState. The LockedState will be owned by this contract.
     function createLockedState() internal returns (LockedState);
 
-    // Gets the last valid state that was sent here
-    function getState() constant external returns (bytes state) {}
+    // Return the number of bytes in the state
+    function getStateLength() constant external returns (uint) {
+        return state.length;
+    }
+
+    // Gets the byte at index, if out of range, throws
+    function getStateAt(uint index) constant external returns (byte) {
+        if (index < state.length) {
+            return state[index];
+        } else {
+            throw;
+        }
+    }
 
     // Gets the address of the LockedState
     function getLockedStateAddress() constant external returns (address lockedState) {}
