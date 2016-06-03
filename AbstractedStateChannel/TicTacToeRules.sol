@@ -225,11 +225,11 @@ contract TicTacToeRules is Rules {
                 break;
             }
             // shenanigans
-            return unilateralRuling(uint(newBoard[9]) == X ? 0x56 : 0x69, newNonce);
+            return unilateralRuling(uint(newBoard[9]) == X ? 0x5E : 0x6D, newNonce);
         }
         if (notChanged) {
             // shenanigans
-            return unilateralRuling(uint(newBoard[9]) == X ? 0x56 : 0x69, newNonce);
+            return unilateralRuling(uint(newBoard[9]) == X ? 0x5E : 0x6D, newNonce);
         } else {
             // nothing fishy
             return false;
