@@ -1,7 +1,7 @@
 import "Rules.sol";
 import "TicTacToeAdjudicator.sol";
 
-/* Grid is as follows:
+/* Board state values are as follows:
  *  0 | 1 | 2
  *  ---------
  *  3 | 4 | 5
@@ -20,6 +20,12 @@ contract TicTacToeRules is Rules {
     address addressO;
     uint timeout;
 
+    /**
+     * Creates a new TicTacToeRules
+     * _addressX: the address of X
+     * _addressO: the address of O
+     * _timeout: the timeout before state can be closed
+     */
     function TicTacToeRules(address _addressX, address _addressO, uint _timeout) {
         addressX = _addressX;
         addressO = _addressO;
@@ -31,10 +37,20 @@ contract TicTacToeRules is Rules {
         delete timeout;
     }
 
+    // Converts a grid coordinate to an index value
     function gridToIndex(uint x, uint y) constant internal returns (uint) {
         return x + 3*y;
     }
 
+    /**
+     * Send a state directly to the underlying state channel.
+     * Allows for transactions to be closed without any adjudication fees.
+     *
+     * state: the state that will be sent
+     * nonce: the nonce that will be sent
+     * the rest are signature values for X and O, respectively
+     * returns: true if state sent sucessfully, otherwise false
+     */
     function sendState(
         bytes state,
         uint nonce,
@@ -59,12 +75,27 @@ contract TicTacToeRules is Rules {
         return adjudicator.close(2, state, nonce, v, r, s);
     }
 
+    /**
+     * Sends a unilateral ruling (0 signatures required) to underlying adjudicator.
+     *
+     * uintState: the state which will be sent
+     * nonce: the nonce which will be sent
+     * returns: true if the state was sent successfully, otherwise false
+     */
     function unilateralRuling(uint8 uintState, uint nonce) internal returns (bool) {
         bytes memory state = new bytes(1);
         state[0] = byte(uintState);
         adjudicator.close(0, state, nonce, new uint8[](1), new bytes32[](1), new bytes32[](1));
     }
 
+    /**
+     * Sends a board to be adjudicated upon.
+     *
+     * board: the board to be adjudicated upon
+     * nonce: the nonce that will be used
+     * v, r, s: X's signature if last player was X, O's signature if last player was O
+     * returns: true if adjudication was sucessful, otherwise false
+     */
     function sendBoard(
         bytes10 board,
         uint nonce,
@@ -75,7 +106,7 @@ contract TicTacToeRules is Rules {
         uint x;
         uint y;
         uint i;
-        uint8 uintState = uint(board[9]) == X ? 0x28 : 0x14;
+        uint8 uintState = uint(board[9]) == X ? 0x28 : 0x14;// by default, the person who didn't play will lose all deposits
 
         if (
             !((uint(board[9]) == X && addressX == ecrecover(sha3(board, nonce), v, r, s))
@@ -94,9 +125,9 @@ contract TicTacToeRules is Rules {
                 i += uint(board[gridToIndex(x, y)]);
             }
             if (i == X * 3) {
-                return unilateralRuling(uintState | 0x01 , nonce);
+                return unilateralRuling(uintState | 0x01 , nonce);// give X the bet winnings
             } else if (i == O * 3) {
-                return unilateralRuling(uintState | 0x02, nonce);
+                return unilateralRuling(uintState | 0x02, nonce);// give O the bet winnings
             }
         }
 
@@ -139,13 +170,23 @@ contract TicTacToeRules is Rules {
         for (i = 0; i < 9; i++) {
             if (uint(board[i]) == BLANK) {
                 // last player wins
-                return unilateralRuling(uintState | uint(board[9]) == X ? 0x01 : 0x02, nonce);
+                return unilateralRuling(uintState | uint(board[9]) == X ? 0x01 : 0x02, nonce);// bets sent to last player
             }
         }
         // it is a tie
-        return unilateralRuling(uintState, nonce);
+        return unilateralRuling(uintState, nonce);// if tie, bets returned
     }
 
+    /**
+     * Punishes a sender for sending an errornous board.
+     *
+     * oldBoard: the old board to be compared against
+     * oldNonce: the old nonce to verify the old board
+     * oldV, oldR, oldS: the signature for oldBoard, from the last player
+     * newBoard: the new board which has an error
+     * newNonce: the new nonce of newBoard
+     * newV, newR, newS: the signatures for newBoard, from the last player
+     */
     function badBoardSent(
         bytes10 oldBoard,
         uint oldNonce,
@@ -158,6 +199,7 @@ contract TicTacToeRules is Rules {
         bytes32 newR,
         bytes32 newS
     ) external returns (bool) {
+        // verify the integrity of oldBoard
         if (
             !((uint(oldBoard[9]) == X && addressX == ecrecover(sha3(oldBoard, oldNonce), oldV, oldR, oldS))
             || (uint(oldBoard[9]) == O && addressO == ecrecover(sha3(oldBoard, oldNonce), oldV, oldR, oldS)))
@@ -165,6 +207,7 @@ contract TicTacToeRules is Rules {
             return false;
         }
 
+        // verify the integrity of newBoard
         if (
             !((uint(newBoard[9]) == X && addressX == ecrecover(sha3(newBoard, newNonce), newV, newR, newS))
             || (uint(newBoard[9]) == O && addressO == ecrecover(sha3(newBoard, newNonce), newV, newR, newS)))
@@ -177,7 +220,7 @@ contract TicTacToeRules is Rules {
             if (oldBoard[i] == newBoard[i]) {
                 break;
             }
-            if ((uint(newBoard[i]) == X || uint(newBoard[i]) == O) && (oldBoard[i] != newBoard[i]) && (uint(oldBoard[i]) == BLANK) && (notChanged && newBoard[i] == newBoard[9])) {
+            if ((uint(newBoard[i]) == X || uint(newBoard[i]) == O) && (uint(oldBoard[i]) == BLANK) && notChanged && (newBoard[i] == newBoard[9])) {
                 notChanged = false;
                 break;
             }
@@ -193,6 +236,13 @@ contract TicTacToeRules is Rules {
         }
     }
 
+    /**
+     * Lets the contract know that you have not disconnected.
+     * Will modify the state such that the disconnect deposits will be
+     * refunded and both party's adjudication deposits will be lost.
+     *
+     * returns: true if sucessful, otherwise false
+     */
     function checkIn() external returns (bool) {
         uint8 uintState = uint8(adjudicator.getStateAt(0));
         if (uintState & 0x40 != 0x00 || uintState & 0x0C != 0x00) {
