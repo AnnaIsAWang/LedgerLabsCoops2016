@@ -78,6 +78,7 @@ contract Adjudicator is Owned {
      * data: the data which will become the next state if everything is valid
      * newNonce: a nonce which is strictly greater than the last nonce. It is used
      *   to prevent replay attacks
+     * rulesAddress: the address of the Rules contract, to be used to prevent replay attacks
      * v[]: an array containing the various v-values for signatures
      * r[]: an array containing the various r-values for signatures
      * s[]: an array containing the various s-values for signatures
@@ -88,12 +89,14 @@ contract Adjudicator is Owned {
         uint requiredSignators,
         bytes data,
         uint newNonce,
+        address rulesAddress,
+        uint randomNonce,
         uint8[] v,
         bytes32[] r,
         bytes32[] s
     ) external onlyOwner returns (bool) {
         if (newNonce > nonce || (newNonce == nonce && requiredSignators == 0)) {
-            bytes32 hash = sha3(data, newNonce);
+            bytes32 hash = sha3(data, newNonce, rulesAddress);
 
             uint signatures = 0;
             for (uint i = 0; i < addresses.length; i++) {
@@ -120,12 +123,13 @@ contract Adjudicator is Owned {
      * Provides consent to early closeout at the present nonce.
      * If signature is for a nonce other than the present, consent will not be given.
      *
+     * rulesAddress: the address of the Rules contract to prevent replay attacks
      * v: the v value of the signature
      * r: the r value of the signature
      * s: the s value of the signature
      */
-    function giveConsent(uint8 v, bytes32 r, bytes32 s) {
-        address consenter = ecrecover(sha3(nonce), v, r, s);
+    function giveConsent(address rulesAddress, uint8 v, bytes32 r, bytes32 s) {
+        address consenter = ecrecover(sha3(nonce, rulesAddress), v, r, s);
         consentGiven[consenter] = nonce;
         ConsentGiven(consenter, nonce);
     }

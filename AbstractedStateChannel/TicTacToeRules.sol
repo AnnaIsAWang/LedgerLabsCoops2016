@@ -72,7 +72,7 @@ contract TicTacToeRules is Rules {
         s[0] = sX;
         s[1] = sO;
 
-        return adjudicator.close(2, state, nonce, v, r, s);
+        return adjudicator.close(2, state, nonce, this, v, r, s);
     }
 
     /**
@@ -85,7 +85,7 @@ contract TicTacToeRules is Rules {
     function unilateralRuling(uint8 uintState, uint nonce) internal returns (bool) {
         bytes memory state = new bytes(1);
         state[0] = byte(uintState);
-        adjudicator.close(0, state, nonce, new uint8[](1), new bytes32[](1), new bytes32[](1));
+        adjudicator.close(0, state, nonce, this, new uint8[](1), new bytes32[](1), new bytes32[](1));
     }
 
     /**
