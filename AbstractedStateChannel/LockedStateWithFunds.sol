@@ -22,10 +22,12 @@ contract LockedStateWithFunds is LockedState {
         return balances[toCheck];
     }
 
+	// Adds funds to the recipient account
     function addFunds(address recipient) {
         balances[recipient] += msg.value;
     }
 
+	// By default, funds are added to the sender's account
     function () {
         addFunds(msg.sender);
     }
