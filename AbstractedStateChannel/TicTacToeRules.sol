@@ -194,7 +194,7 @@ contract TicTacToeRules is Rules {
     }
 
     function checkIn() external returns (bool) {
-        uint8 uintState = uint8(adjudicator.getState()[0]);// this line doesn't compile???
+        uint8 uintState = uint8(adjudicator.getStateAt(0));
         if (uintState & 0x40 != 0x00 || uintState & 0x0C != 0x00) {
             return false;
         }
