@@ -14,20 +14,37 @@ contract TicTacToeLockedState is LockedState {
      * 3: O forfeits adjudication deposit
      * 4: X forfeits disconnect deposit
      * 5: O forfeits disconnect deposit
-     * 6: used to indicate cheating, not used here
+     * 6: used to indicate cheating. Doesn't change where funds will be sent
      * note, if tie, bits 0 and 1 should both be 0 to indicate tie
      */
     address addressX;
     address addressO;
-    address burner = 0;
+    address burner;
 
     uint[6] funds;
 
-    function TicTacToeLockedState(address _addressX, address _addressO) {
+    /**
+     * addressX: the address of X
+     * addressO: the address of O
+     * burner: the address which funds will be burned to (usually 0)
+     */
+    function TicTacToeLockedState(address _addressX, address _addressO, address _burner) {
         addressX = _addressX;
         addressO = _addressO;
+        burner = _burner;
     }
 
+    /*
+     * Deposits funds into an escrow account.
+     *
+     * Accounts are as follows:
+     * 0: X's bet
+     * 1: O's bet
+     * 2: X's adjudication deposit
+     * 3: O's adjudication deposit
+     * 4: X's disconnect deposit
+     * 5: O's disconnect deposit
+     */
     function deposit(uint account) {
         if (account >= 6) {
             throw;
@@ -39,6 +56,7 @@ contract TicTacToeLockedState is LockedState {
     /**
      * Checks if a given state is valid.
      * Must be a bytes1 that holds the specified values above.
+     * Bits 0 and 1 must not both be 1.
      *
      * state: the state to check
      * returns: true if the state is valid, otherwise false
@@ -67,17 +85,18 @@ contract TicTacToeLockedState is LockedState {
 
         uint uintState = uint(state[0]);
 
-        if (uintState & 0x03 == 0x01) {
+        if (uintState & 0x03 == 0x01) {// X wins, gets bet
             sendToX += funds[0] + funds[1];
-        } else if (uintState & 0x03 == 0x02) {
+        } else if (uintState & 0x03 == 0x02) {// O wins, gets bet
             sendToO += funds[0] + funds[1];
-        } else {
+        } else {// tie, they get individual bets back
             sendToX += funds[0];
             sendToO += funds[1];
         }
 
-        sendToX += (uintState & 0x04 == 0 ? funds[2] : 0) + (uintState & 0x10 == 0 ? funds[4] : 0);
-        sendToO += (uintState & 0x08 == 0 ? funds[3] : 0) + (uintState & 0x20 == 0 ? funds[5] : 0);
+        // checks if funds should be forfeited
+        sendToX += (uintState & 0x04 == 0x00 ? funds[2] : 0) + (uintState & 0x10 == 0x00 ? funds[4] : 0);
+        sendToO += (uintState & 0x08 == 0x00 ? funds[3] : 0) + (uintState & 0x20 == 0x00 ? funds[5] : 0);
 
         if (!addressX.send(sendToX)) {
             throw;
@@ -87,6 +106,7 @@ contract TicTacToeLockedState is LockedState {
             throw;
         }
 
+        // burns the remaining funds
         if (!burner.send(this.balance)) {
             throw;
         }
@@ -94,6 +114,7 @@ contract TicTacToeLockedState is LockedState {
         return true;
     }
 
+    // funds should only be sent through the deposit method
     function () {
         throw;
     }
