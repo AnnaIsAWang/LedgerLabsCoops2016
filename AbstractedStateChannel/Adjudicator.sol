@@ -90,7 +90,6 @@ contract Adjudicator is Owned {
         bytes data,
         uint newNonce,
         address rulesAddress,
-        uint randomNonce,
         uint8[] v,
         bytes32[] r,
         bytes32[] s

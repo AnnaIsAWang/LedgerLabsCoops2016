@@ -24,6 +24,6 @@ contract TicTacToeAdjudicator is Adjudicator {
 
     // creates and returns a new TicTacToeLockedState
     function createLockedState() internal returns (LockedState) {
-        return new TicTacToeLockedState(addresses[0], addresses[1]);
+        return new TicTacToeLockedState(addresses[0], addresses[1], 0);
     }
 }
