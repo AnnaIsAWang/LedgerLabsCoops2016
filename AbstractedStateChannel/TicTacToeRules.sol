@@ -245,7 +245,9 @@ contract TicTacToeRules is Rules {
      */
     function checkIn() external returns (bool) {
         uint8 uintState = uint8(adjudicator.getStateAt(0));
-        if (uintState & 0x40 != 0x00 || uintState & 0x0C != 0x00) {
+
+        // does not work if someone has cheated or if adjudicator wasn't used
+        if (uintState & 0x40 != 0x00 || uintState & 0x3C == 0x00) {
             return false;
         }
         return unilateralRuling(uintState & 0xCF | 0x0C, adjudicator.getNonce());
