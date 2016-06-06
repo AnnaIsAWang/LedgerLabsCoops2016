@@ -218,11 +218,11 @@ contract TicTacToeRules is Rules {
         bool notChanged = true;
         for (uint i = 0; i < 9; i++) {
             if (oldBoard[i] == newBoard[i]) {
-                break;
+                continue;
             }
             if ((uint(newBoard[i]) == X || uint(newBoard[i]) == O) && (uint(oldBoard[i]) == BLANK) && notChanged && (newBoard[i] == newBoard[9])) {
                 notChanged = false;
-                break;
+                continue;
             }
             // shenanigans
             return unilateralRuling(uint(newBoard[9]) == X ? 0x5E : 0x6D, newNonce);
