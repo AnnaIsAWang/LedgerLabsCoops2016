@@ -1,0 +1,128 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="testCases2.css">
+		<script>
+			// General test case write-up
+				// Basically a simulation for the test cases, I'm not actually connected to the 
+				// blockchain, nor do I have access to the contracts, I'm just kinda making like
+				// what should happen scnenarios I guess
+
+			// Corresponds with row number
+			var nonce = 1;
+
+			// function for sending new transaction
+			// Sort of structure transactions like how Whisper does it but not really
+			// Data is a string that changes the state (like making a move in TTT)
+			// Signed is the number of signatures achieved and neededSigned is how many are needed to proceed
+			function newtx(form) {
+				// Make a new row
+				var row = document.getElementById("table").insertRow(-1);
+				
+				// Set transaction Number
+				var txNumber = row.insertCell(0);
+				txNumber.innerHTML = nonce;
+				nonce += 1;
+
+				// Set the data
+				var data = row.insertCell(1);
+				data.innerHTML = "Changed the state";
+
+				// Set signatures
+				var signatures = row.insertCell(2);
+				var signed = 1;
+				var neededSigned = form.neededSigned.value;
+				if (neededSigned - signed > 0) {
+					signatures.innerHTML = "Missing " + (neededSigned - signed) + " signatures. Click to pressure your friends into signing the transaction";
+				} else {
+					signatures.innerHTML = "All signatures aquired";
+				}
+				signatures.onclick = function () {
+					if (signed < neededSigned) {
+						signed = neededSigned;
+						signatures.innerHTML = "All signatures aquired";
+					} else {
+						alert("All signatures are acquired");
+					}
+				};
+				signatures.className = "pressure";
+
+				// Set commitment
+				var commitmentStatus = row.insertCell(3);
+				var commit = document.getElementById("commit");
+				var commitment = commit.options[commit.selectedIndex].value;
+				if (commitment === 'Yes') {
+					commitment = 'Incomplete';
+					commitmentStatus.innerHTML = commitment + ". Click here to complete it";
+				} else {
+					commitment = 'N/A';
+					commitmentStatus.innerHTML = commitment;
+				}
+				commitmentStatus.onclick = function () {
+					if (commitment === 'Incomplete') {
+						commitment = 'Complete';
+						commitmentStatus.innerHTML = commitment;
+					} else {
+						alert("You have already completed this commitment");
+					}
+				}
+				commitmentStatus.className = "pressure";
+
+				// Set blockchain status
+				var onBlockchain = row.insertCell(4);
+				var blocky = document.getElementById("onBlockchain");
+				var blockchain = blocky.options[blocky.selectedIndex].value;
+				if (blockchain === 'Yes') {
+					onBlockchain.innerHTML = blockchain;
+				} else {
+					onBlockchain.innerHTML = blockchain + ". Click here to publish this transaction onto the blockchain (WARNING: It's gonna cost you $)";
+				}
+				onBlockchain.onclick = function () {
+					if (blockchain == 'False') {
+						blockchain = 'True';
+						onBlockchain.innerHTML = blockchain;
+					} else {
+						alert("You're already on the blockchain");
+					}
+				}
+				onBlockchain.className = "pressure";
+			}
+// Gotta connect this to the blockchain omg need this to be connected or it's basically useless because it doesn't actually test anything
+		</script>
+	</head>
+
+	<body>
+		<h1> Alice, Bob, and Friends' State Channel </h1>
+		<table id="table">
+			<tr>
+				<th> Transaction Number </th>
+				<th> Data </th>
+				<th> Signatures </th>
+				<th> Commitment Status </th>
+				<th> On Blockchain </th>
+			</tr>
+		</table>
+	
+		<br>
+		<form>
+			<p class="questionTitle"> Answer these questions to change the state! </p>
+			<p class="question"> How many signatures does this state change require? Entering a non-number will confuse me, please don't do that</p>
+			<input type=TEXT name="neededSigned" class="text">
+			<br>
+			<p class="question"> Would you like to attach a commitment? </p>
+			<select id="commit" class="ops">
+				<option value="Yes"> Yes </option>
+				<option value="No"> No </option>
+			</select>
+			<br>
+			<p class="question"> Would you like to broadcast the state change to the blockchain? Warning, this will cost money </p>
+			<select id="onBlockchain" class="ops">
+				<option value="Yes"> Yes </option>
+				<option value="No"> No </option>
+			</select>
+			<br> <br>
+			<input type=BUTTON class="next" value="Change the state" onClick="newtx(this.form)">
+			<br> <br>
+			<p> After clicking this button, see what happens when you click the table cells </p>
+		</form>
+	</body>
+</html>

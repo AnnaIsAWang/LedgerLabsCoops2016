@@ -26,6 +26,38 @@ th {
 	background-color: #F4A460;
 }
 
+.pressure:hover {
+
+}
+
+form {
+	background-color: white;
+	border: 2px solid #336600;
+}
+
+.questionTitle {
+	color: #336600;
+	font-weight: bold;
+	font-size: 30px;
+}
+
+.question {
+	color: #336600;
+	font-size: 20px;
+}
+
+.text {
+	padding: 8px;
+	width: 50px;
+}
+
+.ops {
+	background-color: #D9FFB3;
+	border: none;
+	padding: 5px;
+	font-size: 18px;
+}
+
 .next {
 	padding: 10px;
 	background-color: #7FFF00;

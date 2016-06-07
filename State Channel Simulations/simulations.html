@@ -1,0 +1,123 @@
+<html>
+	<body>
+		<script>
+		
+			if (typeof web3 !== 'undefined') {
+				web3 = new Web3(web3.currentProvider);
+			} else {
+				// set the provider you want from Web3.providers
+				web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+			}	
+			
+			// Dummy functions
+
+			var TTTRulesAddress = "";
+			var TTTRules;
+			var TTTLockedState;
+
+			function newGame(addressX, addressO, timeout) {
+				var _addressX = addressX;
+				var _addressO = addressO;
+				var _timeout = timeout;
+				TTTRules = web3.eth.contract(ABI).at(TTTRulesAddress);
+			}
+
+			// Somehow have to translate accountNumber to some nice thing users can press
+			// Something along the lines of having buttons representing each account and stuff
+			// Should be an option to also do a bundle thing and put everything nicely
+			function deposit(accountNumber, disconnect) {
+				if (disconnect) return false;
+				TTTLockedState = TTTRules.adjudicator.createLockedState();
+				var old = TTTLockedState.funds[accountNumber];
+				TTTLockedState.deposit.sendTransaction(accountNumber, {from: eth.accounts[0]});
+				if (old < TTTLockedState.funds[accountNumber]) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+			// This is kinda an ugly way to get the signature...hmm...must be a better way
+			function sendBoard(board, nonce, v, r, s, disconnect) {
+				if (disconnect) return false;
+				return TTTRules.sendBoard.sendTransaction(board, nonce, v, r, s, {from: eth.accounts[0]});
+			}
+
+			function checkIn(disconnect) {
+				if (disconnect) return false;
+				return TTTRules.checkIn.sendTransaction({from: eth.accounts[0]});
+			}
+
+			// How do I get the nonces? Ask Denton
+			function badBoard(oldBoard, oldNonce, oldV, oldR, oldS, newBoard, newNonce, newV, newR, newS, disconnect) {
+				if (disconnect) return false;
+				return TTTRules.badBoardSent.sendTransaction(oldBoard, oldNonce, oldV, oldR, oldS, newBoard, newNonce, newV, newR, newS, {from: eth.accounts[0]});
+			}
+
+			function endGame(board, newNonce, v, r, s, disconnect) {
+				if (disconnect) return false;
+				return TTTRules.adjudicator.close.sendTransaction(2, board, newNonce, this, v, r, s, {from: eth.accounts[0]});
+			}
+
+			function endChannel() {
+				TTTLockedState.kill.sendTransaction({from: eth.accounts[0]});
+			}
+
+		</script>
+
+		<h1> Test Cases </h1>
+
+		<script>
+			// Totally not interactive right now
+			// Start and Finish a game with no moving
+			document.body.innerHTML += "Empty game: ";
+			document.body.innerHTML += endGame(0, 0, 0, 0, 0, true);
+			document.body.innerHTML += "<br>";
+			// Nonce exceeds uint8 capacity
+			document.body.innerHTML += "Huge Nonce: ";
+			document.body.innerHTML += false; // idk how to test this yet
+			document.body.innerHTML += "<br>";
+			// The game ends normally with a victor
+			document.body.innerHTML += "Honest game and X wins: ";
+			document.body.innerHTML += endGame(0, 0, 0, 0, 0, true);
+			document.body.innerHTML += "<br>";
+			// The game ends normally with a draw
+			document.body.innerHTML += "Honest game and tie: ";
+			document.body.innerHTML += endGame(0, 0, 0, 0, 0, true);
+			document.body.innerHTML += "<br>";
+			// X is caught cheating and O punishes them
+			document.body.innerHTML += "X sends in old board when O disconnects and isn't forgiven: ";
+			document.body.innerHTML += sendBoard(0, 0, 0, 0, 0, true) && checkIn(true) && endGame(0, 0, 0, 0, 0, true);
+			document.body.innerHTML += "<br>";
+			// X is caught cheating and O is benevolent
+			document.body.innerHTML += "X sends in old board when O disconnects and is forgiven: ";
+			document.body.innerHTML += sendBoard(0, 0, 0, 0, 0, true) && checkIn(true);
+			document.body.innerHTML += "<br>";
+			// X's disconnection time exceeds the timeout
+			document.body.innerHTML += "X goes offline forever: ";
+			document.body.innerHTML += sendBoard(0, 0, 0, 0, 0, true) && endGame(0, 0, 0, 0, 0, true);
+			document.body.innerHTML += "<br>";
+			// X moves twice
+			document.body.innerHTML += "X moves twice: ";
+			document.body.innerHTML += badBoard(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, true);
+			document.body.innerHTML += "<br>";
+			// X tries to put an X where O has already put an O
+			document.body.innerHTML += "X overrides O: ";
+			document.body.innerHTML += badBoard(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, true);
+			document.body.innerHTML += "<br>";
+			// X says O has disappeared so X can claim victory
+			document.body.innerHTML += "X falsely claims O has disappeared: ";
+			document.body.innerHTML += checkIn(true);
+			document.body.innerHTML += "<br>";
+			// Z get power of attorney for X when X disconnects
+			document.body.innerHTML += "Z plays for X: ";
+			document.body.innerHTML += endGame(0, 0, 0, 0, 0, true);
+			document.body.innerHTML += "<br>";
+			// X is a sore loser
+			document.body.innerHTML += "X refuses to accept O's win: ";
+			document.body.innerHTML += sendBoard(0, 0, 0, 0, 0, true);
+			document.body.innerHTML += "<br>";
+
+		</script>
+	</body>
+</html>
