@@ -89,13 +89,12 @@ contract Adjudicator is Owned {
         uint requiredSignators,
         bytes data,
         uint newNonce,
-        address rulesAddress,
         uint8[] v,
         bytes32[] r,
         bytes32[] s
     ) external onlyOwner returns (bool) {
         if (newNonce > nonce || (newNonce == nonce && requiredSignators == 0)) {
-            bytes32 hash = sha3(data, newNonce, rulesAddress);
+            bytes32 hash = sha3(data, newNonce, address(owner));
 
             uint signatures = 0;
             for (uint i = 0; i < addresses.length; i++) {
@@ -127,8 +126,8 @@ contract Adjudicator is Owned {
      * r: the r value of the signature
      * s: the s value of the signature
      */
-    function giveConsent(address rulesAddress, uint8 v, bytes32 r, bytes32 s) {
-        address consenter = ecrecover(sha3(nonce, rulesAddress), v, r, s);
+    function giveConsent(uint8 v, bytes32 r, bytes32 s) {
+        address consenter = ecrecover(sha3(nonce, address(owner)), v, r, s);
         consentGiven[consenter] = nonce;
         ConsentGiven(consenter, nonce);
     }

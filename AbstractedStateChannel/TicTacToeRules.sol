@@ -119,8 +119,8 @@ contract TicTacToeRules is Rules {
         uint8 uintState = uint(board[9]) == X ? 0x28 : 0x14;// by default, the person who didn't play will lose all deposits
 
         if (
-            !((uint(board[9]) == X && addressX == ecrecover(sha3(board, nonce, this), v, r, s))
-            || (uint(board[9]) == O && addressO == ecrecover(sha3(board, nonce, this), v, r, s)))
+            !((uint(board[9]) == X && addressX == ecrecover(sha3(board, nonce, address(this)), v, r, s))
+            || (uint(board[9]) == O && addressO == ecrecover(sha3(board, nonce, address(this)), v, r, s)))
         ) {
             return false;
         }
