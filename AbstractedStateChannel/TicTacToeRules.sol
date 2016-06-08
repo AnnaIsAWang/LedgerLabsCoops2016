@@ -12,6 +12,11 @@ import "TicTacToeAdjudicator.sol";
  */
 contract TicTacToeRules is Rules {
 
+    event StateSent(bytes state);
+    event Cheating(address cheater);
+    event BoardWinner(address winner);
+    event CheckedIn();
+
     uint constant BLANK = 0;
     uint constant X = 1;
     uint constant O = 4;
@@ -72,7 +77,12 @@ contract TicTacToeRules is Rules {
         s[0] = sX;
         s[1] = sO;
 
-        return adjudicator.close(2, state, nonce, this, v, r, s);
+        if (adjudicator.close(2, state, nonce, this, v, r, s)) {
+            StateSent(state);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -125,9 +135,19 @@ contract TicTacToeRules is Rules {
                 i += uint(board[gridToIndex(x, y)]);
             }
             if (i == X * 3) {
-                return unilateralRuling(uintState | 0x01 , nonce);// give X the bet winnings
+                if (unilateralRuling(uintState | 0x01, nonce)) {// give X the bet winnings
+                    BoardWinner(addressX);
+                    return true;
+                } else {
+                    return false;
+                }
             } else if (i == O * 3) {
-                return unilateralRuling(uintState | 0x02, nonce);// give O the bet winnings
+                if (unilateralRuling(uintState | 0x02, nonce)) {// give O the bet winnings
+                    BoardWinner(addressO);
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
 
@@ -138,9 +158,19 @@ contract TicTacToeRules is Rules {
                 i += uint(board[gridToIndex(x, y)]);
             }
             if (i == X * 3) {
-                return unilateralRuling(uintState | 0x01, nonce);
+                if (unilateralRuling(uintState | 0x01, nonce)) {
+                    BoardWinner(addressX);
+                    return true;
+                } else {
+                    return false;
+                }
             } else if (i == O * 3) {
-                return unilateralRuling(uintState | 0x02, nonce);
+                if (unilateralRuling(uintState | 0x02, nonce)) {
+                    BoardWinner(addressO);
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
 
@@ -150,9 +180,19 @@ contract TicTacToeRules is Rules {
             i += uint(board[gridToIndex(x, x)]);
         }
         if (i == X * 3) {
-            return unilateralRuling(uintState | 0x01, nonce);
+            if (unilateralRuling(uintState | 0x01, nonce)) {
+                BoardWinner(addressX);
+                return true;
+            } else {
+                return false;
+            }
         } else if (i == O * 3) {
-            return unilateralRuling(uintState | 0x02, nonce);
+            if (unilateralRuling(uintState | 0x02, nonce)) {
+                BoardWinner(addressO);
+                return true;
+            } else {
+                return false;
+            }
         }
 
         // checking /
@@ -161,20 +201,40 @@ contract TicTacToeRules is Rules {
             i += uint(board[gridToIndex(x, 2 - x)]);
         }
         if (i == X * 3) {
-            return unilateralRuling(uintState | 0x01, nonce);
+            if (unilateralRuling(uintState | 0x01, nonce)) {
+                BoardWinner(addressX);
+                return true;
+            } else {
+                return false;
+            }
         } else if (i == O * 3) {
-            return unilateralRuling(uintState | 0x02, nonce);
+            if (unilateralRuling(uintState | 0x02, nonce)) {
+                BoardWinner(addressO);
+                return true;
+            } else {
+                return false;
+            }
         }
 
         // check if tie
         for (i = 0; i < 9; i++) {
             if (uint(board[i]) == BLANK) {
                 // last player wins
-                return unilateralRuling(uintState | uint(board[9]) == X ? 0x01 : 0x02, nonce);// bets sent to last player
+                if (unilateralRuling(uintState | uint(board[9]) == X ? 0x01 : 0x02, nonce)) {// bets sent to last player
+                    BoardWinner(uint(board[9]) == X ? addressX : addressO);
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
         // it is a tie
-        return unilateralRuling(uintState, nonce);// if tie, bets returned
+        if (unilateralRuling(uintState, nonce)) {// if tie, bets returned
+            BoardWinner(0);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -225,11 +285,17 @@ contract TicTacToeRules is Rules {
                 continue;
             }
             // shenanigans
-            return unilateralRuling(uint(newBoard[9]) == X ? 0x5E : 0x6D, newNonce);
+            if (unilateralRuling(uint(newBoard[9]) == X ? 0x5E : 0x6D, newNonce)) {
+                Cheating(uint(newBoard[9]) == X ? addressX : addressO);
+                return true;
+            } else {
+                return false;
+            }
         }
-        if (notChanged) {
+        if (notChanged && unilateralRuling(uint(newBoard[9]) == X ? 0x5E : 0x6D, newNonce)) {
             // shenanigans
-            return unilateralRuling(uint(newBoard[9]) == X ? 0x5E : 0x6D, newNonce);
+            Cheating(uint(newBoard[9]) == X ? addressX : addressO);
+            return true;
         } else {
             // nothing fishy
             return false;
@@ -250,6 +316,11 @@ contract TicTacToeRules is Rules {
         if (uintState & 0x40 != 0x00 || uintState & 0x3C == 0x00) {
             return false;
         }
-        return unilateralRuling(uintState & 0xCF | 0x0C, adjudicator.getNonce());
+        if (unilateralRuling(uintState & 0xCF | 0x0C, adjudicator.getNonce())) {
+            CheckedIn();
+            return true;
+        } else {
+            return false;
+        }
     }
 }
