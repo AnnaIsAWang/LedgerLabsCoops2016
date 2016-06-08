@@ -1,4 +1,8 @@
 <html>
+	<head>
+		<script src="web3.js/dist/web3.min.js"></script>
+	</head>
+	
 	<body>
 		<script>
 		
@@ -71,7 +75,7 @@
 			// Totally not interactive right now
 			// Start and Finish a game with no moving
 			document.body.innerHTML += "Empty game: ";
-			document.body.innerHTML += endGame(0, 0, 0, 0, 0, true);
+			document.body.innerHTML += "<span style=\"color:green\">" endGame(0, 0, 0, 0, 0, true) "</spa;
 			document.body.innerHTML += "<br>";
 			// Nonce exceeds uint8 capacity
 			document.body.innerHTML += "Huge Nonce: ";
@@ -83,6 +87,10 @@
 			document.body.innerHTML += "<br>";
 			// The game ends normally with a draw
 			document.body.innerHTML += "Honest game and tie: ";
+			document.body.innerHTML += endGame(0, 0, 0, 0, 0, true);
+			document.body.innerHTML += "<br>";
+			// The game does not get played to completion but the outcome is obvious
+			document.body.innerHTML += "The game is ended before completion: ";
 			document.body.innerHTML += endGame(0, 0, 0, 0, 0, true);
 			document.body.innerHTML += "<br>";
 			// X is caught cheating and O punishes them
@@ -116,6 +124,10 @@
 			// X is a sore loser
 			document.body.innerHTML += "X refuses to accept O's win: ";
 			document.body.innerHTML += sendBoard(0, 0, 0, 0, 0, true);
+			document.body.innerHTML += "<br>";
+			// X pretends to disappear and reappear to see if O will cheat
+			document.body.innerHTML += "X pretends to disappear: ";
+			document.body.innerHTML += checkIn(true) && endGame(0, 0, 0, 0, 0, true);
 			document.body.innerHTML += "<br>";
 
 		</script>
