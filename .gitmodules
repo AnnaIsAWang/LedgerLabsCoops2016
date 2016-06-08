@@ -1,8 +1,4 @@
-[submodule "Identity/web/web3.js"]
-	path = Identity/web/web3.js
-	url = https://github.com/ethereum/web3.js.git
-	branch = master
-[submodule "StateChannelSimulations/web3.js"]
-	path = StateChannelSimulations/web3.js
+[submodule "web3.js"]
+	path = web3.js
 	url = https://github.com/ethereum/web3.js.git
 	branch = master
