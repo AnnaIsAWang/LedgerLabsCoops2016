@@ -1,11 +1,20 @@
-// Gives the parameter needed for ecrecover
+function sign(signingAddress, hash) {
+	var sig = web3.eth.sign(signingAddress, hash);
+	return [
+		sig.slice(0, 66),
+		'0x' + sig.slice(66, 130),
+		27 + Number(sig.slice(130, 132))
+	];
+}
 
-function signature(data, nonce, rulesAddress) {
-	var hash = web3.sha3(data, nonce, rulesAddress);
-	var sig = web3.eth.sign(eth.accounts[0], hash);
-	var r = "0x" + sig.slice(2, 66);
-	var s = "0x" + sig.slice(66, 130);
-	var v = 27 + Number(sig.slice(130, 132));
-	var ecrecoverData = [hash, v, r, s];
-	return ecrecoverData;
+function signState(signingAddress, state, nonce, rulesAddress) {
+	return sign(signingAddress, web3.sha3(state, nonce, rulesAddress));
+}
+
+function signConsent(signingAddress, nonce, rulesAddress) {
+	return sign(signingAddress, web3.sha3(nonce, rulesAddress));
+}
+
+function signBoard(signingAddress, board, nonce, rulesAddress) {
+	return sign(signingAddress, web3.sha3(board, nonce, rulesAddress));
 }
