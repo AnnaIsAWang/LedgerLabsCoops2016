@@ -259,18 +259,11 @@ contract TicTacToeRules is Rules {
         bytes32 newR,
         bytes32 newS
     ) external returns (bool) {
-        // verify the integrity of oldBoard
+        address signer = uint(newBoard[9]) == X ? addressX : addressO;
+        // verify the integrity of the boards
         if (
-            !((uint(oldBoard[9]) == X && addressX == ecrecover(sha3(oldBoard, oldNonce, this), oldV, oldR, oldS))
-            || (uint(oldBoard[9]) == O && addressO == ecrecover(sha3(oldBoard, oldNonce, this), oldV, oldR, oldS)))
-        ) {
-            return false;
-        }
-
-        // verify the integrity of newBoard
-        if (
-            !((uint(newBoard[9]) == X && addressX == ecrecover(sha3(newBoard, newNonce, this), newV, newR, newS))
-            || (uint(newBoard[9]) == O && addressO == ecrecover(sha3(newBoard, newNonce, this), newV, newR, newS)))
+            !(signer == ecrecover(sha3(oldBoard, oldNonce, this), oldV, oldR, oldS) &&
+            signer == ecrecover(sha3(newBoard, newNonce, this), newV, newR, newS))
         ) {
             return false;
         }
