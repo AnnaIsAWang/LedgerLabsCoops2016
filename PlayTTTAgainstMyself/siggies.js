@@ -1,4 +1,4 @@
-var contractAddress = "0x218eC5339dF9e3930670765aBCdBF67A26cB4fb9";
+var contractAddress = "0x485eD2fa57BB8FEC5AAe6EE77FcE431D7d9eB322";
 
 if (typeof web3 !== 'undefined') {
 	web3 = new Web3(web3.currentProvider);
@@ -7,7 +7,7 @@ if (typeof web3 !== 'undefined') {
 	web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 }
 
-var siggies = web3.eth.contract([{"constant":false,"inputs":[{"name":"hash","type":"bytes32"},{"name":"v","type":"uint8"},{"name":"r","type":"bytes32"},{"name":"s","type":"bytes32"}],"name":"isX","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"readO","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"hash","type":"bytes32"},{"name":"v","type":"uint8"},{"name":"r","type":"bytes32"},{"name":"s","type":"bytes32"}],"name":"isO","outputs":[],"type":"function"},{"constant":true,"inputs":[],"name":"O","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"readX","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"X","outputs":[{"name":"","type":"bool"}],"type":"function"},{"inputs":[{"name":"_addressX","type":"address"},{"name":"_addressO","type":"address"}],"type":"constructor"}]).at(contractAddress);
+var siggies = web3.eth.contract([ { "constant": false, "inputs": [ { "name": "hash", "type": "bytes32" }, { "name": "v", "type": "uint8" }, { "name": "r", "type": "bytes32" }, { "name": "s", "type": "bytes32" } ], "name": "isX", "outputs": [ { "name": "", "type": "bool" } ], "type": "function" }, { "constant": false, "inputs": [ { "name": "hash", "type": "bytes32" }, { "name": "v", "type": "uint8" }, { "name": "r", "type": "bytes32" }, { "name": "s", "type": "bytes32" } ], "name": "isO", "outputs": [ { "name": "", "type": "bool" } ], "type": "function" } ]).at(contractAddress);
 
 // Corresponds to the person who you're playing as
 var activeAddress = "";
@@ -28,21 +28,10 @@ function moved(button) {
 	// Gets parameters for ecrecover
 	var data = siggy(0, 0, 0);
 	
-	// Changes the state
-	siggies.isX.sendTransaction(data[0], data[1], data[2], data[3], {from: activeAddress});
-	siggies.isO.sendTransaction(data[0], data[1], data[2], data[3], {from: activeAddress});
-	
-	// Delays the interface so that the state change can be mined, while loop essentially freezes screen
-	var currentBlock = web3.eth.blockNumber;
-	var nextBlock = web3.eth.blockNumber + 1;
-	while(currentBlock < nextBlock) {
-		currentBlock = web3.eth.blockNumber;
-	}
-	
 	// Check state and change the board accordingly
-	if (siggies.readX()) {
+	if (siggies.isX.call(data[0], data[1], data[2], data[3])) {
 		button.value = "X";
-	} else if (siggies.readO()) {
+	} else if (siggies.isO.call(data[0], data[1], data[2], data[3])) {
 		button.value = "O";
 	}
 }
