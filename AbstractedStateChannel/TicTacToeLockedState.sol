@@ -54,6 +54,16 @@ contract TicTacToeLockedState is LockedState {
     }
 
     /**
+     * Returns the balance of the account corresponding to the above.
+     */
+    function getBalance(uint account) constant external returns (uint) {
+        if (account >= 6) { throw;
+        } else {
+            return funds[account];
+        }
+    }
+
+    /**
      * Checks if a given state is valid.
      * Must be a bytes1 that holds the specified values above.
      * Bits 0 and 1 must not both be 1.
