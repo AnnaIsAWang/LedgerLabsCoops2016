@@ -103,12 +103,13 @@ function signBoard(form) {
 	board += '00' + new Number(form.lastPlayer.value).toString(16);
 	//over here, figure out how to append the things onto board from 8 to 0
 	
-	// Made an array representation of the board
-	var stringOfPieces = [];
-	for (var i = 0; i < 9; ++i) {
+///////////////////Appended things onto board from 8 to 0
+	for (var i = 8; i >= 0; --i) {
 		var current = document.getElementById(i.toString());
-		stringOfPieces += current.options[current.selectedIndex].value;
+		board += current.options[current.selectedIndex].value;
 	}
+//////////////////////////////////////////////////////////
+	console.log(board);
 
 	var nonce = '';
 	for (var i = 0; i < 64; i++) {
@@ -117,7 +118,7 @@ function signBoard(form) {
 	nonce += new Number(form.nonce.value).toString(16);
 
 	var toBeHashed = '0x'
-		+state.slice(-2)
+		+board.slice(-2) // Changed this to say 'board'
 		+nonce.slice(-64)
 		+TicTacToeRules.address.slice(2);
 
