@@ -19,6 +19,11 @@ contract Rules {
         StateChannelCreated(adjudicator, adjudicator.getLockedStateAddress());
     }
 
+    // Gets the address of the Adjudicator
+    function getAdjudicatorAddress() constant external returns (address) {
+        return adjudicator;
+    }
+
     // An abstract method which create and return an Adjudicator. The Adjudicator will be owned by this contract.
     function createAdjudicator() internal returns (Adjudicator);
 

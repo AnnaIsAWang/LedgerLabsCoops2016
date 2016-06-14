@@ -60,10 +60,14 @@ contract Adjudicator is Owned {
     }
 
     // Gets the address of the LockedState
-    function getLockedStateAddress() constant external returns (address lockedState) {}
+    function getLockedStateAddress() constant external returns (address) {
+        return lockedState;
+    }
 
     // Gets the current nonce
-    function getNonce() constant external returns (uint nonce) {}
+    function getNonce() constant external returns (uint) {
+        return nonce;
+    }
 
     /**
      * Checks signatures and updates the state as necessary.
