@@ -35,7 +35,7 @@
 		<br />
 
 		<h2>Signatures</h2>
-		<h3>Sign Final State</h3>
+		<h3>Sign State</h3>
 		<form action="" method="GET">
 			Nonce:
 			<input type="number" name="nonce" min="0" /><br />
@@ -43,23 +43,114 @@
 			<input type="radio" name="winner" value="1" />X wins
 			<input type="radio" name="winner" value="2" />O wins
 			<br />
-			<input type="checkbox" name="adjudicationDepositX" value="4">X loses adjudication deposit
+			<input type="checkbox" name="adjudicationDepositX" value="4" />X loses adjudication deposit
 			<br />
-			<input type="checkbox" name="adjudicationDepositO" value="8">O loses adjudication deposit
+			<input type="checkbox" name="adjudicationDepositO" value="8" />O loses adjudication deposit
 			<br />
-			<input type="checkbox" name="disconnectDepositX" value="16">X loses disconnect deposit
+			<input type="checkbox" name="disconnectDepositX" value="16" />X loses disconnect deposit
 			<br />
-			<input type="checkbox" name="disconnectDepositO" value="32">O loses disconnect deposit
+			<input type="checkbox" name="disconnectDepositO" value="32" />O loses disconnect deposit
 			<br />
-			<input type="checkbox" name="cheating" value="64">Cheating
+			<input type="checkbox" name="cheating" value="64" />Cheating
 			<br />
-			<input type="button" value="Sign" onClick="signFinalState(this.form)" /><br />
+			<input type="button" value="Sign" onClick="signState(this.form)" /><br />
 		</form>
 		<br />
 		<table id="stateTable">
 			<tr>
 				<th>Signing Address</th>
 				<th>State</th>
+				<th>Nonce</th>
+				<th>Contract Address</th>
+				<th>v</th>
+				<th>r</th>
+				<th>s</th>
+			</tr>
+		</table>
+
+		<h3>Sign Board</h3>
+		<form action="" method="GET">
+			Board:
+			<table>
+				<tr>
+					<td>
+						<select name="0">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="1">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="2">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+				</tr><tr>
+					<td>
+						<select name="3">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="4">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="5">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+				</tr><tr>
+					<td>
+						<select name="6">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="7">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="8">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+			Last Player:<br />
+			<input type="radio" name="lastPlayer" value="1" />X
+			<input type="radio" name="lastPlayer" value="4" />O
+			<br />
+			<input type="button" value="Sign" onClick="signBoard(this.form)" /><br />
+		</form>
+		<br />
+		<table id="boardTable">
+			<tr>
+				<th>Signing Address</th>
+				<th>State</th><!--change later lol -->
 				<th>Nonce</th>
 				<th>Contract Address</th>
 				<th>v</th>

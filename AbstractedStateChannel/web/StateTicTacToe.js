@@ -53,7 +53,7 @@ function attachToContract(form) {
 	alert("Attached to contract!");
 }
 
-function signFinalState(form) {
+function signState(form) {
 	var state = '00' + (
 			new Number(form.winner.value)
 			| new Number(form.adjudicationDepositX.checked ? form.adjudicationDepositX.value : 0)
@@ -62,6 +62,46 @@ function signFinalState(form) {
 			| new Number(form.disconnectDepositO.checked ? form.disconnectDepositO.value : 0)
 			| new Number(form.cheating.checked ? form.cheating.value : 0)
 		).toString(16);
+
+	var nonce = '';
+	for (var i = 0; i < 64; i++) {
+		nonce += '0';
+	}
+	nonce += new Number(form.nonce.value).toString(16);
+
+	var toBeHashed = '0x'
+		+state.slice(-2)
+		+nonce.slice(-64)
+		+TicTacToeRules.address.slice(2);
+
+	console.log(toBeHashed);
+	var signature = sign(web3.eth.accounts[$('#sender').val()], web3.sha3(toBeHashed, {encoding: 'hex'}));
+	console.log(web3.sha3(toBeHashed, {encoding: 'hex'}));
+
+	$('#stateTable').append('<tr><td>'
+			+ web3.eth.accounts[$('#sender').val()]
+			+ '</td><td>'
+			+ state
+			+ '</td><td>'
+			+ form.nonce.value
+			+ '</td><td>'
+			+ TicTacToeRules.address
+			+ '</td><td>'
+			+ signature[0]
+			+ '</td><td>'
+			+ signature[1]
+			+ '</td><td>'
+			+ signature[2]
+		);
+}
+
+function signBoard(form) {
+	var board = '';
+	for (var i = 0; i < 20; i++) {
+		board += '0';
+	}
+	board += '00' + new Number(form.lastPlayer.value).toString(16);
+	//over here, figure out how to append the things onto board from 8 to 0
 
 	var nonce = '';
 	for (var i = 0; i < 64; i++) {
