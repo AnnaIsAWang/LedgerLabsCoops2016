@@ -1,0 +1,113 @@
+<html>
+	<head>
+		<title>Tic Tac Toe on State Channels</title>
+		<link rel="shortcut icon" href="/favicon.png" />
+		<script src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+		<script src="/web3.js/dist/web3.min.js"></script>
+		<script src="/Constants.js"></script>
+		<script src="/StateTicTacToe.js"></script>
+	</head>
+	<body>
+		<h1>Tic Tac Toe on State Channels</h1>
+
+		Transaction Sender:
+		<select id="sender" class="addresses"></select>
+
+		<h2>Contract Initialisation</h2>
+		<h3>Create State Channel Game</h3>
+		<form action="" method="GET">
+			Address X:
+			<select name="addressX" class="addresses"></select><br />
+			Address O:
+			<select name="addressO" class="addresses"></select><br />
+			Timeout (seconds):
+			<input type="number" name="timeout" min="0" /><br />
+			<input type="button" value="Create Contract" onClick="createTicTacToeRules(this.form)" /><br />
+		</form>
+		<br />
+
+		<h3>Attach to Existing Contract</h3>
+		<form action="" method="GET">
+			Address of Rules:
+			<input type="text" name="address" /><br />
+			<input type="button" value="Attach to Contract" onClick="attachToContract(this.form)" /><br />
+		</form>
+		<br />
+
+		<h2>Signatures</h2>
+		<h3>Sign Final State</h3>
+		<form action="" method="GET">
+			Nonce:
+			<input type="number" name="nonce" min="0" /><br />
+			<input type="radio" name="winner" value="0" />Tie
+			<input type="radio" name="winner" value="1" />X wins
+			<input type="radio" name="winner" value="2" />O wins
+			<br />
+			<input type="checkbox" name="adjudicationDepositX" value="4">X loses adjudication deposit
+			<br />
+			<input type="checkbox" name="adjudicationDepositO" value="8">O loses adjudication deposit
+			<br />
+			<input type="checkbox" name="disconnectDepositX" value="16">X loses disconnect deposit
+			<br />
+			<input type="checkbox" name="disconnectDepositO" value="32">O loses disconnect deposit
+			<br />
+			<input type="checkbox" name="cheating" value="64">Cheating
+			<br />
+			<input type="button" value="Sign" onClick="signFinalState(this.form)" /><br />
+		</form>
+		<br />
+		<table id="stateTable">
+			<tr>
+				<th>Signing Address</th>
+				<th>State</th>
+				<th>Nonce</th>
+				<th>Contract Address</th>
+				<th>v</th>
+				<th>r</th>
+				<th>s</th>
+			</tr>
+		</table>
+
+		<h3>Sign Board State</h3>
+
+		<h2>Tic Tac Toe Rules</h2>
+
+		<h2>Tic Tac Toe Adjudicator</h2>
+		<h3>Get Nonce</h3>
+		<form action="" method="GET">
+			<input type="button" value="Get Last Sent Nonce" onClick="getNonce(this.form)" />
+		</form>
+		<br />
+
+		<h2>Tic Tac Toe Locked State</h2>
+		<h3>Deposit Funds</h3>
+		<form action="" method="GET">
+			Deposit (in Wei):
+			<input type="number" name="amount" min="0" /><br />
+			Account:<br />
+			<input type="radio" name="account" value="0" />X's bet
+			<input type="radio" name="account" value="1" />O's bet
+			<input type="radio" name="account" value="2" />X's adjudication deposit
+			<input type="radio" name="account" value="3" />O's adjudication deposit
+			<input type="radio" name="account" value="4" />X's disconnect deposit
+			<input type="radio" name="account" value="5" />O's disconnect deposit
+			<br />
+			<input type="button" value="Deposit Funds" onClick="depositFunds(this.form)" /><br />
+		</form>
+		<br />
+
+		<h3>Get Balance</h3>
+		<form action="" method="GET">
+			Account:<br />
+			<input type="radio" name="account" value="0" />X's bet
+			<input type="radio" name="account" value="1" />O's bet
+			<input type="radio" name="account" value="2" />X's adjudication deposit
+			<input type="radio" name="account" value="3" />O's adjudication deposit
+			<input type="radio" name="account" value="4" />X's disconnect deposit
+			<input type="radio" name="account" value="5" />O's disconnect deposit
+			<br />
+			<input type="button" value="Get Balance" onClick="getBalance(this.form)" /><br />
+		</form>
+	</body>
+</html>
+
