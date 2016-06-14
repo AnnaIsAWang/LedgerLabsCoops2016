@@ -18,10 +18,6 @@ function sign(signingAddress, hash) {
 	];
 }
 
-function signState(signingAddress, state, nonce, rulesAddress) {
-	return sign(signingAddress, web3.sha3(state, nonce, rulesAddress));
-}
-
 function signConsent(signingAddress, nonce, rulesAddress) {
 	return sign(signingAddress, web3.sha3(nonce, rulesAddress));
 }
@@ -58,24 +54,34 @@ function attachToContract(form) {
 }
 
 function signFinalState(form) {
-	var state = form.winner.value
-		| form.adjudicationDepositX.value
-		| form.adjudicationDepositO.value
-		| form.disconnectDepositX.value
-		| form.disconnectDepositO.value
-		| form.cheating.value;	//how the hell to convert this to bytes????
+	var state = '00' + (
+			new Number(form.winner.value)
+			| new Number(form.adjudicationDepositX.checked ? form.adjudicationDepositX.value : 0)
+			| new Number(form.adjudicationDepositO.checked ? form.adjudicationDepositO.value : 0)
+			| new Number(form.disconnectDepositX.checked ? form.disconnectDepositX.value : 0)
+			| new Number(form.disconnectDepositO.checked ? form.disconnectDepositO.value : 0)
+			| new Number(form.cheating.checked ? form.cheating.value : 0)
+		).toString(16);
 
-	var signature = signState(
-			web3.eth.accounts[$('#sender').val()],
-			state,
-			new Number(form.nonce.value),
-			TicTacToeRules.address
-		);
+	var nonce = '';
+	for (var i = 0; i < 64; i++) {
+		nonce += '0';
+	}
+	nonce += new Number(form.nonce.value).toString(16);
+
+	var toBeHashed = '0x'
+		+state.slice(-2)
+		+nonce.slice(-64)
+		+TicTacToeRules.address.slice(2);
+
+	console.log(toBeHashed);
+	var signature = sign(web3.eth.accounts[$('#sender').val()], web3.sha3(toBeHashed, {encoding: 'hex'}));
+	console.log(web3.sha3(toBeHashed, {encoding: 'hex'}));
 
 	$('#stateTable').append('<tr><td>'
 			+ web3.eth.accounts[$('#sender').val()]
 			+ '</td><td>'
-			+ state //yo, this is ronggg, this ain't bytes
+			+ state
 			+ '</td><td>'
 			+ form.nonce.value
 			+ '</td><td>'
