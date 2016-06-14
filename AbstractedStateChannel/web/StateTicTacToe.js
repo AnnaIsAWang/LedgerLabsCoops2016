@@ -102,6 +102,13 @@ function signBoard(form) {
 	}
 	board += '00' + new Number(form.lastPlayer.value).toString(16);
 	//over here, figure out how to append the things onto board from 8 to 0
+	
+	// Made an array representation of the board
+	var stringOfPieces = [];
+	for (var i = 0; i < 9; ++i) {
+		var current = document.getElementById(i.toString());
+		stringOfPieces += current.options[current.selectedIndex].value;
+	}
 
 	var nonce = '';
 	for (var i = 0; i < 64; i++) {
