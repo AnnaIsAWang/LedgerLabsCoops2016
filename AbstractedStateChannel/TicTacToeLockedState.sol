@@ -45,7 +45,7 @@ contract TicTacToeLockedState is LockedState {
      * 4: X's disconnect deposit
      * 5: O's disconnect deposit
      */
-    function deposit(uint account) {
+    function deposit(uint account) external {
         if (account >= 6) {
             throw;
         } else {
