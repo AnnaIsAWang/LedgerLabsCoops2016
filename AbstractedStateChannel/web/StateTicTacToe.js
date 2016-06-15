@@ -50,14 +50,14 @@ function attachToContract(form) {
 }
 
 function signState(form) {
-	var state = '00' + (
+	var state = ('00' + (
 			new Number(form.winner.value)
 			| new Number(form.adjudicationDepositX.checked ? form.adjudicationDepositX.value : 0)
 			| new Number(form.adjudicationDepositO.checked ? form.adjudicationDepositO.value : 0)
 			| new Number(form.disconnectDepositX.checked ? form.disconnectDepositX.value : 0)
 			| new Number(form.disconnectDepositO.checked ? form.disconnectDepositO.value : 0)
 			| new Number(form.cheating.checked ? form.cheating.value : 0)
-		).toString(16);
+		).toString(16)).slice(-2);
 
 	var nonce = '';
 	for (var i = 0; i < 64; i++) {
@@ -66,7 +66,7 @@ function signState(form) {
 	nonce += new Number(form.nonce.value).toString(16);
 
 	var toBeHashed = '0x'
-		+state.slice(-2)
+		+state
 		+nonce.slice(-64)
 		+TicTacToeRules.address.slice(2);
 
@@ -75,7 +75,7 @@ function signState(form) {
 	$('#stateTable').append('<tr><td>'
 			+ web3.eth.accounts[$('#sender').val()]
 			+ '</td><td>'
-			+ state
+			+ '0x' +state
 			+ '</td><td>'
 			+ form.nonce.value
 			+ '</td><td>'
@@ -97,6 +97,7 @@ function signBoard(form) {
 		board += ('00' + new Number(boardElements[i].value).toString(16)).slice(-2);
 	}
 	board += ('00' + new Number(form.lastPlayer.value).toString(16)).slice(-2);
+	board.slice(-20);
 
 	var nonce = '';
 	for (var i = 0; i < 64; i++) {
@@ -105,7 +106,7 @@ function signBoard(form) {
 	nonce += new Number(form.nonce.value).toString(16);
 
 	var toBeHashed = '0x'
-		+board.slice(-20)
+		+board
 		+nonce.slice(-64)
 		+TicTacToeRules.address.slice(2);
 
@@ -114,7 +115,7 @@ function signBoard(form) {
 	$('#boardTable').append('<tr><td>'
 			+ web3.eth.accounts[$('#sender').val()]
 			+ '</td><td>'
-			+ board
+			+ '0x' +board
 			+ '</td><td>'
 			+ form.nonce.value
 			+ '</td><td>'
@@ -126,6 +127,23 @@ function signBoard(form) {
 			+ '</td><td>'
 			+ signature[2]
 		);
+}
+
+function sendState(form) {
+	TicTacToeRules.sendState.sendTransaction(
+			form.state.value,// is this incorrect? do a conversion string->bytes
+			new Number(form.nonce.value),
+			new Number(form.vX.value),
+			form.rX.value, //conversion thing
+			form.sX.value, //conversion thing
+			new Number(form.vO.value),
+			form.rO.value, //conversion thing
+			form.sO.value, //conversion thing
+			{
+				from: web3.eth.accounts[$('#sender').val()]
+			}
+		);
+		alert('Call sent to blockchain.');
 }
 
 function getState(form) {
@@ -171,6 +189,13 @@ function giveConsent(form) {
 			+ '</td><td>'
 			+ signature[2]
 		);
+}
+
+function finaliseChannel(form) {
+	TicTacToeAdjudicator.finaliseChannel.sendTransaction({
+			from: web3.eth.accounts[$('#sender').val()]
+	});
+	alert('Call sent to blockchain.');
 }
 
 function depositFunds(form) {

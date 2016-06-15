@@ -2,6 +2,7 @@
 	<head>
 		<title>Tic Tac Toe on State Channels</title>
 		<link rel="shortcut icon" href="/favicon.png" />
+		<link rel="stylesheet" href="/style.css" />
 		<script src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
 		<script src="/web3.js/dist/web3.min.js"></script>
 		<script src="/Constants.js"></script>
@@ -10,7 +11,7 @@
 	<body>
 		<h1>Tic Tac Toe on State Channels</h1>
 
-		Transaction Sender:
+		Transaction Sender/Signer:
 		<select id="sender" class="addresses"></select>
 
 		<h2>Contract Initialisation</h2>
@@ -162,6 +163,25 @@
 		</table>
 
 		<h2>Tic Tac Toe Rules</h2>
+		<h3>Send State</h3>
+		<form action="" method="GET">
+			State:
+			<input type="text" name="state" /><br />
+			Nonce:
+			<input type="number" name="nonce" min="0" /><br />
+			X's Signature<br />
+			v: <input type="number" name="vX" min="27" max="28" />
+			r: <input type="text" name="rX" />
+			s: <input type="text" name="sX" />
+			<br />
+			O's Signature<br />
+			v: <input type="number" name="vO" min="27" max="28" />
+			r: <input type="text" name="rO" />
+			s: <input type="text" name="sO" />
+			<br />
+			<input type="button" value="Send" onClick="sendState(this.form)" /><br />
+		</form>
+		<br />
 
 		<h2>Tic Tac Toe Adjudicator</h2>
 		<h3>Get Current State</h3>
@@ -195,6 +215,12 @@
 				<th>s</th>
 			</tr>
 		</table>
+
+		<h3>Finalise Channel</h3>
+		<form action="" method="GET">
+			<input type="button" value="Finalise" onClick="finaliseChannel(this.form)" />
+		</form>
+		<br />
 
 		<h2>Tic Tac Toe Locked State</h2>
 		<h3>Deposit Funds</h3>
