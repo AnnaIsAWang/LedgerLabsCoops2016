@@ -70,47 +70,27 @@
 
 		<h3>Sign Board</h3>
 		<form action="" method="GET">
+			Nonce:
+			<input type="number" name="nonce" min="0" /><br />
 			Board:
 			<table>
 				<tr>
 					<td>
-						<select name="0" id="0">
+						<select name="0" class="boardItem">
 							<option value="0"></option>
 							<option value="1">X</option>
 							<option value="4">O</option>
 						</select>
 					</td>
 					<td>
-						<select name="1" id="1">
+						<select name="1" class="boardItem">
 							<option value="0"></option>
 							<option value="1">X</option>
 							<option value="4">O</option>
 						</select>
 					</td>
 					<td>
-						<select name="2" id="2">
-							<option value="0"></option>
-							<option value="1">X</option>
-							<option value="4">O</option>
-						</select>
-					</td>
-				</tr><tr>
-					<td>
-						<select name="3" id="3">
-							<option value="0"></option>
-							<option value="1">X</option>
-							<option value="4">O</option>
-						</select>
-					</td>
-					<td>
-						<select name="4" id="4">
-							<option value="0"></option>
-							<option value="1">X</option>
-							<option value="4">O</option>
-						</select>
-					</td>
-					<td>
-						<select name="5" id="5">
+						<select name="2" class="boardItem">
 							<option value="0"></option>
 							<option value="1">X</option>
 							<option value="4">O</option>
@@ -118,21 +98,43 @@
 					</td>
 				</tr><tr>
 					<td>
-						<select name="6" id="6">
+						<select name="3" class="boardItem">
 							<option value="0"></option>
 							<option value="1">X</option>
 							<option value="4">O</option>
 						</select>
 					</td>
 					<td>
-						<select name="7" id="7">
+						<select name="4" class="boardItem">
 							<option value="0"></option>
 							<option value="1">X</option>
 							<option value="4">O</option>
 						</select>
 					</td>
 					<td>
-						<select name="8" id="8">
+						<select name="5" class="boardItem">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+				</tr><tr>
+					<td>
+						<select name="6" class="boardItem">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="7" class="boardItem">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="8" class="boardItem">
 							<option value="0"></option>
 							<option value="1">X</option>
 							<option value="4">O</option>
@@ -150,7 +152,7 @@
 		<table id="boardTable">
 			<tr>
 				<th>Signing Address</th>
-				<th>State</th><!--change later lol -->
+				<th>Board</th>
 				<th>Nonce</th>
 				<th>Contract Address</th>
 				<th>v</th>
@@ -159,7 +161,24 @@
 			</tr>
 		</table>
 
-		<h3>Sign Board State</h3>
+		<h3>Sign Consent</h3>
+		<form action="" method="GET">
+			Nonce:
+			<input type="number" name="nonce" min="0" /><br />
+			<br />
+			<input type="button" value="Sign" onClick="signConsent(this.form)" /><br />
+		</form>
+		<br />
+		<table id="consentTable">
+			<tr>
+				<th>Signing Address</th>
+				<th>Nonce</th>
+				<th>Contract Address</th>
+				<th>v</th>
+				<th>r</th>
+				<th>s</th>
+			</tr>
+		</table>
 
 		<h2>Tic Tac Toe Rules</h2>
 

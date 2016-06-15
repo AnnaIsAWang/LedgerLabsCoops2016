@@ -74,9 +74,7 @@ function signState(form) {
 		+nonce.slice(-64)
 		+TicTacToeRules.address.slice(2);
 
-	console.log(toBeHashed);
 	var signature = sign(web3.eth.accounts[$('#sender').val()], web3.sha3(toBeHashed, {encoding: 'hex'}));
-	console.log(web3.sha3(toBeHashed, {encoding: 'hex'}));
 
 	$('#stateTable').append('<tr><td>'
 			+ web3.eth.accounts[$('#sender').val()]
@@ -97,19 +95,13 @@ function signState(form) {
 
 function signBoard(form) {
 	var board = '';
-	for (var i = 0; i < 20; i++) {
-		board += '0';
+
+	var boardElements = $(form).find('.boardItem');
+	for (var i = 0; i < boardElements.length; i++) {
+		console.log(boardElements[i]);
+		board += ('00' + new Number(boardElements[i].value).toString(16)).slice(-2);
 	}
-	board += '00' + new Number(form.lastPlayer.value).toString(16);
-	//over here, figure out how to append the things onto board from 8 to 0
-	
-///////////////////Appended things onto board from 8 to 0
-	for (var i = 8; i >= 0; --i) {
-		var current = document.getElementById(i.toString());
-		board += current.options[current.selectedIndex].value;
-	}
-//////////////////////////////////////////////////////////
-	console.log(board);
+	board += ('00' + new Number(form.lastPlayer.value).toString(16)).slice(-2);
 
 	var nonce = '';
 	for (var i = 0; i < 64; i++) {
@@ -118,18 +110,45 @@ function signBoard(form) {
 	nonce += new Number(form.nonce.value).toString(16);
 
 	var toBeHashed = '0x'
-		+board.slice(-2) // Changed this to say 'board'
+		+board.slice(-20)
 		+nonce.slice(-64)
 		+TicTacToeRules.address.slice(2);
 
-	console.log(toBeHashed);
 	var signature = sign(web3.eth.accounts[$('#sender').val()], web3.sha3(toBeHashed, {encoding: 'hex'}));
-	console.log(web3.sha3(toBeHashed, {encoding: 'hex'}));
 
-	$('#stateTable').append('<tr><td>'
+	$('#boardTable').append('<tr><td>'
 			+ web3.eth.accounts[$('#sender').val()]
 			+ '</td><td>'
-			+ state
+			+ board
+			+ '</td><td>'
+			+ form.nonce.value
+			+ '</td><td>'
+			+ TicTacToeRules.address
+			+ '</td><td>'
+			+ signature[0]
+			+ '</td><td>'
+			+ signature[1]
+			+ '</td><td>'
+			+ signature[2]
+		);
+}
+
+function signConsent(form) {
+	var nonce = '';
+	for (var i = 0; i < 64; i++) {
+		nonce += '0';
+	}
+	nonce += new Number(form.nonce.value).toString(16);
+
+	var toBeHashed = '0x'
+		+nonce.slice(-64)
+		+TicTacToeRules.address.slice(2);
+
+	console.log(web3.sha3(toBeHashed, {encoding: 'hex'}));
+	var signature = sign(web3.eth.accounts[$('#sender').val()], web3.sha3(toBeHashed, {encoding: 'hex'}));
+
+	$('#consentTable').append('<tr><td>'
+			+ web3.eth.accounts[$('#sender').val()]
 			+ '</td><td>'
 			+ form.nonce.value
 			+ '</td><td>'
