@@ -51,19 +51,19 @@ function attachToContract(form) {
 
 function signState(form) {
 	var state = ('00' + (
-			new Number(form.winner.value)
-			| new Number(form.adjudicationDepositX.checked ? form.adjudicationDepositX.value : 0)
-			| new Number(form.adjudicationDepositO.checked ? form.adjudicationDepositO.value : 0)
-			| new Number(form.disconnectDepositX.checked ? form.disconnectDepositX.value : 0)
-			| new Number(form.disconnectDepositO.checked ? form.disconnectDepositO.value : 0)
-			| new Number(form.cheating.checked ? form.cheating.value : 0)
+			parseInt(form.winner.value)
+			| form.adjudicationDepositX.checked ? parseInt(form.adjudicationDepositX.value) : 0
+			| form.adjudicationDepositO.checked ? parseInt(form.adjudicationDepositO.value) : 0
+			| form.disconnectDepositX.checked ? parseInt(form.disconnectDepositX.value) : 0
+			| form.disconnectDepositO.checked ? parseInt(form.disconnectDepositO.value) : 0
+			| form.cheating.checked ? parseInt(form.cheating.value) : 0
 		).toString(16)).slice(-2);
 
 	var nonce = '';
 	for (var i = 0; i < 64; i++) {
 		nonce += '0';
 	}
-	nonce += new Number(form.nonce.value).toString(16);
+	nonce += parseInt(form.nonce.value).toString(16);
 
 	var toBeHashed = '0x'
 		+state
@@ -79,8 +79,6 @@ function signState(form) {
 			+ '</td><td>'
 			+ form.nonce.value
 			+ '</td><td>'
-			+ TicTacToeRules.address
-			+ '</td><td>'
 			+ signature[0]
 			+ '</td><td>'
 			+ signature[1]
@@ -94,16 +92,16 @@ function signBoard(form) {
 
 	var boardElements = $(form).find('.boardItem');
 	for (var i = 0; i < boardElements.length; i++) {
-		board += ('00' + new Number(boardElements[i].value).toString(16)).slice(-2);
+		board += ('00' + parseInt(boardElements[i].value).toString(16)).slice(-2);
 	}
-	board += ('00' + new Number(form.lastPlayer.value).toString(16)).slice(-2);
+	board += ('00' + parseInt(form.lastPlayer.value).toString(16)).slice(-2);
 	board.slice(-20);
 
 	var nonce = '';
 	for (var i = 0; i < 64; i++) {
 		nonce += '0';
 	}
-	nonce += new Number(form.nonce.value).toString(16);
+	nonce += parseInt(form.nonce.value).toString(16);
 
 	var toBeHashed = '0x'
 		+board
@@ -119,8 +117,6 @@ function signBoard(form) {
 			+ '</td><td>'
 			+ form.nonce.value
 			+ '</td><td>'
-			+ TicTacToeRules.address
-			+ '</td><td>'
 			+ signature[0]
 			+ '</td><td>'
 			+ signature[1]
@@ -129,16 +125,35 @@ function signBoard(form) {
 		);
 }
 
+function arrayOfStringsToNumbers(array) {
+	for (var i = 0; i < array.length; i++) {
+		array[i] = parseInt(array[i], 16);
+	}
+}
+
 function sendState(form) {
+	var rXArray = form.rX.value.match(/.{2}/g);
+	var sXArray = form.sX.value.match(/.{2}/g);
+	var rOArray = form.rO.value.match(/.{2}/g);
+	var sOArray = form.sO.value.match(/.{2}/g);
+	rXArray.splice(0, 1);
+	sXArray.splice(0, 1);
+	rOArray.splice(0, 1);
+	sOArray.splice(0, 1);
+	arrayOfStringsToNumbers(rXArray);
+	arrayOfStringsToNumbers(sXArray);
+	arrayOfStringsToNumbers(rOArray);
+	arrayOfStringsToNumbers(sOArray);
+
 	TicTacToeRules.sendState.sendTransaction(
-			form.state.value,// is this incorrect? do a conversion string->bytes
-			new Number(form.nonce.value),
-			new Number(form.vX.value),
-			form.rX.value, //conversion thing
-			form.sX.value, //conversion thing
-			new Number(form.vO.value),
-			form.rO.value, //conversion thing
-			form.sO.value, //conversion thing
+			[parseInt(form.state.value, 16)],
+			parseInt(form.nonce.value),
+			parseInt(form.vX.value),
+			rXArray,
+			sXArray,
+			parseInt(form.vO.value),
+			rOArray,
+			sOArray,
 			{
 				from: web3.eth.accounts[$('#sender').val()]
 			}
@@ -159,7 +174,7 @@ function giveConsent(form) {
 	for (var i = 0; i < 64; i++) {
 		nonce += '0';
 	}
-	nonce += new Number(form.nonce.value).toString(16);
+	nonce += parseInt(form.nonce.value).toString(16);
 
 	var toBeHashed = '0x'
 		+nonce.slice(-64)
@@ -181,8 +196,6 @@ function giveConsent(form) {
 			+ '</td><td>'
 			+ form.nonce.value
 			+ '</td><td>'
-			+ TicTacToeRules.address
-			+ '</td><td>'
 			+ signature[0]
 			+ '</td><td>'
 			+ signature[1]
@@ -200,16 +213,17 @@ function finaliseChannel(form) {
 
 function depositFunds(form) {
 	TicTacToeLockedState.deposit.sendTransaction(
-			new Number(form.account.value),
+			parseInt(form.account.value),
 			{
 				from: web3.eth.accounts[$('#sender').val()],
 				value: form.amount.value
 			}
 		);
+	alert('Call sent to blockchain.');
 }
 
 function getBalance(form) {
-	alert(TicTacToeLockedState.getBalance(new Number(form.account.value)));
+	alert(TicTacToeLockedState.getBalance(parseInt(form.account.value)));
 }
 
 $(document).ready(function () {

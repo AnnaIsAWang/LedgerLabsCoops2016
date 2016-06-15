@@ -262,6 +262,7 @@ contract TicTacToeRules is Rules {
         address signer = uint(newBoard[9]) == X ? addressX : addressO;
         // verify the integrity of the boards
         if (
+            oldNonce >= newNonce ||
             !(signer == ecrecover(sha3(oldBoard, oldNonce, this), oldV, oldR, oldS) &&
             signer == ecrecover(sha3(newBoard, newNonce, this), newV, newR, newS))
         ) {
