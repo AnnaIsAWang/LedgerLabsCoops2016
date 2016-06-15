@@ -27,7 +27,7 @@
 		<br />
 
 		<h3>Attach to Existing Contract</h3>
-		<form action="" method="GET">
+		<form action="" method="GET" id="existingContract">
 			Address of Rules:
 			<input type="text" name="address" /><br />
 			<input type="button" value="Attach to Contract" onClick="attachToContract(this.form)" /><br />
@@ -161,12 +161,28 @@
 			</tr>
 		</table>
 
-		<h3>Sign Consent</h3>
+		<h2>Tic Tac Toe Rules</h2>
+
+		<h2>Tic Tac Toe Adjudicator</h2>
+		<h3>Get Current State</h3>
+		<form action="" method="GET">
+			<input type="button" value="Get Last Sent State" onClick="getState(this.form)" />
+		</form>
+		<br />
+
+
+		<h3>Get Nonce</h3>
+		<form action="" method="GET">
+			<input type="button" value="Get Last Sent Nonce" onClick="getNonce(this.form)" />
+		</form>
+		<br />
+
+		<h3>Give Consent</h3>
 		<form action="" method="GET">
 			Nonce:
 			<input type="number" name="nonce" min="0" /><br />
 			<br />
-			<input type="button" value="Sign" onClick="signConsent(this.form)" /><br />
+			<input type="button" value="Sign" onClick="giveConsent(this.form)" /><br />
 		</form>
 		<br />
 		<table id="consentTable">
@@ -179,15 +195,6 @@
 				<th>s</th>
 			</tr>
 		</table>
-
-		<h2>Tic Tac Toe Rules</h2>
-
-		<h2>Tic Tac Toe Adjudicator</h2>
-		<h3>Get Nonce</h3>
-		<form action="" method="GET">
-			<input type="button" value="Get Last Sent Nonce" onClick="getNonce(this.form)" />
-		</form>
-		<br />
 
 		<h2>Tic Tac Toe Locked State</h2>
 		<h3>Deposit Funds</h3>

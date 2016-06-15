@@ -18,14 +18,6 @@ function sign(signingAddress, hash) {
 	];
 }
 
-function signConsent(signingAddress, nonce, rulesAddress) {
-	return sign(signingAddress, web3.sha3(nonce, rulesAddress));
-}
-
-function signBoard(signingAddress, board, nonce, rulesAddress) {
-	return sign(signingAddress, web3.sha3(board, nonce, rulesAddress));
-}
-
 function createTicTacToeRules(form) {
 	TicTacToeRules = web3.eth.contract(TIC_TAC_TOE_RULES_INTERFACE).new(
 		web3.eth.accounts[form.addressX.value],
@@ -36,11 +28,12 @@ function createTicTacToeRules(form) {
 			data: CONTRACT_BYTECODE,
 			gas: 4700000
 		}, function (e, contract) {
-			console.log(e, contract);
 			if (typeof contract.address !== 'undefined') {
-				console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
 				TicTacToeAdjudicator = web3.eth.contract(TIC_TAC_TOE_ADJUDICATOR_INTERFACE).at(contract.getAdjudicatorAddress());
 				TicTacToeLockedState = web3.eth.contract(TIC_TAC_TOE_LOCKED_STATE_INTERFACE).at(TicTacToeAdjudicator.getLockedStateAddress());
+				$('#existingContract input[name=address]').val(contract.address);
+				localStorage.setItem('address', contract.address);
+				alert('Contract has been mined at:' +contract.address);
 			}
 		}
 	);
@@ -50,6 +43,7 @@ function attachToContract(form) {
 	TicTacToeRules = web3.eth.contract(TIC_TAC_TOE_RULES_INTERFACE).at(form.address.value);
 	TicTacToeAdjudicator = web3.eth.contract(TIC_TAC_TOE_ADJUDICATOR_INTERFACE).at(TicTacToeRules.getAdjudicatorAddress());
 	TicTacToeLockedState = web3.eth.contract(TIC_TAC_TOE_LOCKED_STATE_INTERFACE).at(TicTacToeAdjudicator.getLockedStateAddress());
+	localStorage.setItem('address', form.address.value);
 	alert("Attached to contract!");
 }
 
@@ -98,7 +92,6 @@ function signBoard(form) {
 
 	var boardElements = $(form).find('.boardItem');
 	for (var i = 0; i < boardElements.length; i++) {
-		console.log(boardElements[i]);
 		board += ('00' + new Number(boardElements[i].value).toString(16)).slice(-2);
 	}
 	board += ('00' + new Number(form.lastPlayer.value).toString(16)).slice(-2);
@@ -133,7 +126,15 @@ function signBoard(form) {
 		);
 }
 
-function signConsent(form) {
+function getState(form) {
+	alert(TicTacToeAdjudicator.getStateAt(0));
+}
+
+function getNonce(form) {
+	alert(TicTacToeAdjudicator.getNonce());
+}
+
+function giveConsent(form) {
 	var nonce = '';
 	for (var i = 0; i < 64; i++) {
 		nonce += '0';
@@ -144,7 +145,6 @@ function signConsent(form) {
 		+nonce.slice(-64)
 		+TicTacToeRules.address.slice(2);
 
-	console.log(web3.sha3(toBeHashed, {encoding: 'hex'}));
 	var signature = sign(web3.eth.accounts[$('#sender').val()], web3.sha3(toBeHashed, {encoding: 'hex'}));
 
 	$('#consentTable').append('<tr><td>'
@@ -160,10 +160,6 @@ function signConsent(form) {
 			+ '</td><td>'
 			+ signature[2]
 		);
-}
-
-function getNonce(form) {
-	alert(TicTacToeAdjudicator.getNonce());
 }
 
 function depositFunds(form) {
@@ -185,4 +181,10 @@ $(document).ready(function () {
 	for (var i = 0; i < web3.eth.accounts.length; i++) {
 		$('.addresses').append("<option value=\"" +i +"\">" +web3.eth.accounts[i] +"</option>");
 	}
+
+	// Persistent state
+	if (localStorage.getItem('address')) {
+		$('#existingContract input[name=address]').val(localStorage.getItem('address'));
+	}
+
 });
