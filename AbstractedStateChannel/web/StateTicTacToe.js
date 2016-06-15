@@ -68,7 +68,8 @@ function signState(form) {
 	var toBeHashed = '0x'
 		+state
 		+nonce.slice(-64)
-		+TicTacToeRules.address.slice(2);
+		+'692a70d2e424a56d2c6c27aa97d1a86395877b3a';
+		//+TicTacToeRules.address.slice(2);
 
 	var signature = sign(web3.eth.accounts[$('#sender').val()], web3.sha3(toBeHashed, {encoding: 'hex'}));
 
@@ -125,25 +126,20 @@ function signBoard(form) {
 		);
 }
 
-function arrayOfStringsToNumbers(array) {
+function stringToNumberArray(string) {
+	array = string.match(/.{2}/g);
+	array.splice(0, 1);
 	for (var i = 0; i < array.length; i++) {
 		array[i] = parseInt(array[i], 16);
 	}
+	return array;
 }
 
 function sendState(form) {
-	var rXArray = form.rX.value.match(/.{2}/g);
-	var sXArray = form.sX.value.match(/.{2}/g);
-	var rOArray = form.rO.value.match(/.{2}/g);
-	var sOArray = form.sO.value.match(/.{2}/g);
-	rXArray.splice(0, 1);
-	sXArray.splice(0, 1);
-	rOArray.splice(0, 1);
-	sOArray.splice(0, 1);
-	arrayOfStringsToNumbers(rXArray);
-	arrayOfStringsToNumbers(sXArray);
-	arrayOfStringsToNumbers(rOArray);
-	arrayOfStringsToNumbers(sOArray);
+	var rXArray = stringToNumberArray(form.rX.value);
+	var sXArray = stringToNumberArray(form.sX.value);
+	var rOArray = stringToNumberArray(form.rO.value);
+	var sOArray = stringToNumberArray(form.sO.value);
 
 	TicTacToeRules.sendState.sendTransaction(
 			[parseInt(form.state.value, 16)],
