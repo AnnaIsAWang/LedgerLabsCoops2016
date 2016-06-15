@@ -33,7 +33,9 @@ function createTicTacToeRules(form) {
 				TicTacToeLockedState = web3.eth.contract(TIC_TAC_TOE_LOCKED_STATE_INTERFACE).at(TicTacToeAdjudicator.getLockedStateAddress());
 				$('#existingContract input[name=address]').val(contract.address);
 				localStorage.setItem('address', contract.address);
-				alert('Contract has been mined at:' +contract.address);
+				alert('Contract has been mined at: ' +contract.address);
+			} else {
+				alert('Contract transaction: ' +contract.transactionHash);
 			}
 		}
 	);
@@ -146,6 +148,15 @@ function giveConsent(form) {
 		+TicTacToeRules.address.slice(2);
 
 	var signature = sign(web3.eth.accounts[$('#sender').val()], web3.sha3(toBeHashed, {encoding: 'hex'}));
+
+	TicTacToeAdjudicator.giveConsent.sendTransaction(
+			signature[0],
+			signature[1],
+			signature[2],
+			{
+				from: web3.eth.accounts[$('#sender').val()]
+			}
+		);
 
 	$('#consentTable').append('<tr><td>'
 			+ web3.eth.accounts[$('#sender').val()]
