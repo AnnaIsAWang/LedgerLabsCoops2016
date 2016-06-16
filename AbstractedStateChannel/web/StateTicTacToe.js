@@ -12,7 +12,7 @@ var TicTacToeLockedState;
 function sign(signingAddress, hash) {
 	var signature = web3.eth.sign(signingAddress, hash);
 	return [
-		27 + Number(signature.slice(130, 132)),
+		27 + parseInt(signature.slice(130, 132), 16),
 		signature.slice(0, 66),
 		'0x' + signature.slice(66, 130)
 	];
