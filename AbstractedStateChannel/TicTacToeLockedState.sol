@@ -45,7 +45,7 @@ contract TicTacToeLockedState is LockedState {
      * 4: X's disconnect deposit
      * 5: O's disconnect deposit
      */
-    function deposit(uint account) external {
+    function deposit(uint account) external notBroadcast {
         if (account >= 6) {
             throw;
         } else {
@@ -56,7 +56,7 @@ contract TicTacToeLockedState is LockedState {
     /**
      * Returns the balance of the account corresponding to the above.
      */
-    function getBalance(uint account) constant external returns (uint) {
+    function getBalance(uint account) constant external notBroadcast returns (uint) {
         if (account >= 6) { throw;
         } else {
             return funds[account];
@@ -85,7 +85,7 @@ contract TicTacToeLockedState is LockedState {
      * state: the state that will be broadcast
      * returns: true if transaction sent sucessfully, otherwise false
      */
-    function broadcastState(bytes state) external onlyOwner returns (bool) {
+    function broadcastState(bytes state) external onlyOwner notBroadcast returns (bool) {
         if (!checkState(state)) {
             return false;
         }
