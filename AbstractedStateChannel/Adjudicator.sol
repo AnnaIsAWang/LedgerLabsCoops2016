@@ -39,7 +39,6 @@ contract Adjudicator is Owned {
         addresses = _addresses;
         consenters = _consenters;
         timeout = _timeout;
-        lockedState = createLockedState();
     }
 
     // An abstract method which should create and return a LockedState. The LockedState will be owned by this contract.

@@ -15,7 +15,6 @@ contract Rules {
 
     // Creates a new Rules
     function Rules() {
-        adjudicator = createAdjudicator();
         StateChannelCreated(adjudicator, adjudicator.getLockedStateAddress());
     }
 

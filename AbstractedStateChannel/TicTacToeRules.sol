@@ -35,6 +35,7 @@ contract TicTacToeRules is Rules {
         addressX = _addressX;
         addressO = _addressO;
         timeout = _timeout;
+        adjudicator = createAdjudicator();
     }
 
     function createAdjudicator() internal returns (Adjudicator newAdjudicator) {

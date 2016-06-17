@@ -52,11 +52,11 @@ function attachToContract(form) {
 function signState(form) {
 	var state = ('00' + (
 			parseInt(form.winner.value)
-			| form.adjudicationDepositX.checked ? parseInt(form.adjudicationDepositX.value) : 0
-			| form.adjudicationDepositO.checked ? parseInt(form.adjudicationDepositO.value) : 0
-			| form.disconnectDepositX.checked ? parseInt(form.disconnectDepositX.value) : 0
-			| form.disconnectDepositO.checked ? parseInt(form.disconnectDepositO.value) : 0
-			| form.cheating.checked ? parseInt(form.cheating.value) : 0
+			| (form.adjudicationDepositX.checked ? parseInt(form.adjudicationDepositX.value) : 0)
+			| (form.adjudicationDepositO.checked ? parseInt(form.adjudicationDepositO.value) : 0)
+			| (form.disconnectDepositX.checked ? parseInt(form.disconnectDepositX.value) : 0)
+			| (form.disconnectDepositO.checked ? parseInt(form.disconnectDepositO.value) : 0)
+			| (form.cheating.checked ? parseInt(form.cheating.value) : 0)
 		).toString(16)).slice(-2);
 
 	var nonce = '';
@@ -68,8 +68,7 @@ function signState(form) {
 	var toBeHashed = '0x'
 		+state
 		+nonce.slice(-64)
-		+'692a70d2e424a56d2c6c27aa97d1a86395877b3a';
-		//+TicTacToeRules.address.slice(2);
+		+TicTacToeRules.address.slice(2);
 
 	var signature = sign(web3.eth.accounts[$('#sender').val()], web3.sha3(toBeHashed, {encoding: 'hex'}));
 
