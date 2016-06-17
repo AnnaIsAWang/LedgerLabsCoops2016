@@ -121,6 +121,7 @@ contract TicTacToeLockedState is LockedState {
             throw;
         }
 
+        broadcast = true;
         return true;
     }
 
