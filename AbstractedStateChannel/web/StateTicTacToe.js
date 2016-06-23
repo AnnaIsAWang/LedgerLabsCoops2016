@@ -125,32 +125,19 @@ function signBoard(form) {
 		);
 }
 
-function stringToNumberArray(string) {
-	array = string.match(/.{2}/g);
-	array.splice(0, 1);
-	for (var i = 0; i < array.length; i++) {
-		array[i] = parseInt(array[i], 16);
-	}
-	return array;
-}
-
 function sendState(form) {
-	var rXArray = stringToNumberArray(form.rX.value);
-	var sXArray = stringToNumberArray(form.sX.value);
-	var rOArray = stringToNumberArray(form.rO.value);
-	var sOArray = stringToNumberArray(form.sO.value);
-
 	TicTacToeRules.sendState.sendTransaction(
-			[parseInt(form.state.value, 16)],
+			form.state.value,
 			parseInt(form.nonce.value),
 			parseInt(form.vX.value),
-			rXArray,
-			sXArray,
+			form.rX.value,
+			form.sX.value,
 			parseInt(form.vO.value),
-			rOArray,
-			sOArray,
+			form.rO.value,
+			form.sO.value,
 			{
-				from: web3.eth.accounts[$('#sender').val()]
+				from: web3.eth.accounts[$('#sender').val()],
+				gas: 4700000
 			}
 		);
 		alert('Call sent to blockchain.');
