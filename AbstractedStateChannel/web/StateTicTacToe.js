@@ -56,7 +56,7 @@ function signState(form) {
 			| (form.adjudicationDepositO.checked ? parseInt(form.adjudicationDepositO.value) : 0)
 			| (form.disconnectDepositX.checked ? parseInt(form.disconnectDepositX.value) : 0)
 			| (form.disconnectDepositO.checked ? parseInt(form.disconnectDepositO.value) : 0)
-			| (form.cheating.checked ? parseInt(form.cheating.value) : 0)
+			| (form.immutable.checked ? parseInt(form.immutable.value) : 0)
 		).toString(16)).slice(-2);
 
 	var nonce = '';
