@@ -27,3 +27,4 @@ contract TicTacToeAdjudicator is Adjudicator {
         return new TicTacToeLockedState(addresses[0], addresses[1], 0);
     }
 }
+

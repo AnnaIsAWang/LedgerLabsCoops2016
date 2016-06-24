@@ -223,6 +223,15 @@ function kill(form) {
 		alert('Call sent to blockchain.');
 }
 
+function checkIn(form) {
+	TicTacToeRules.checkIn.sendTransaction(
+			{
+				from: web3.eth.accounts[$('#sender').val()],
+				gas: 4700000
+			}
+		);
+}
+
 function getState(form) {
 	alert(TicTacToeAdjudicator.getStateAt(0));
 }

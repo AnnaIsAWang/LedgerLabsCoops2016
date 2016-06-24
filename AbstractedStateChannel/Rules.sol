@@ -11,6 +11,11 @@ contract Rules {
     // Event triggered when a new state channel is created (this contract is initialised)
     event StateChannelCreated(address Adjudicator, address LockedState);
 
+    // Events from Adjudicator
+    event CloseEvent(bytes state, uint nonce);
+    event ChannelFinalised(bytes state);
+    event ConsentGiven(address consenter, uint nonce);
+
     Adjudicator adjudicator;
 
     // Creates a new Rules
