@@ -181,6 +181,51 @@
 		</form>
 		<br />
 
+		<h3>Send Board</h3>
+		<form action="" method="GET">
+			Board:
+			<input type="text" name="board" /><br />
+			Nonce:
+			<input type="number" name="nonce" min="0" /><br />
+			Signature<br />
+			v: <input type="number" name="v" min="27" max="28" />
+			r: <input type="text" name="r" />
+			s: <input type="text" name="s" />
+			<br />
+			<input type="button" value="Send" onClick="sendBoard(this.form)" /><br />
+		</form>
+		<br />
+
+		<h3>Bad Board Sent</h3>
+		<form action="" method="GET">
+			Old Board:
+			<input type="text" name="oldBoard" /><br />
+			Old Nonce:
+			<input type="number" name="oldNonce" min="0" /><br />
+			Old Signature<br />
+			v: <input type="number" name="oldV" min="27" max="28" />
+			r: <input type="text" name="oldR" />
+			s: <input type="text" name="oldS" />
+			<br />
+			New Board:
+			<input type="text" name="newBoard" /><br />
+			New Nonce:
+			<input type="number" name="newNonce" min="0" /><br />
+			New Signature<br />
+			v: <input type="number" name="newV" min="27" max="28" />
+			r: <input type="text" name="newR" />
+			s: <input type="text" name="newS" />
+			<br />
+			<input type="button" value="Send" onClick="badBoardSent(this.form)" /><br />
+		</form>
+		<br />
+
+		<h3>Check In</h3>
+		<form action="" method="GET">
+			<input type="button" value="Check In" onClick="checkIn(this.form)" />
+		</form>
+		<br />
+
 		<h2>Tic Tac Toe Adjudicator</h2>
 		<h3>Get Current State</h3>
 		<form action="" method="GET">

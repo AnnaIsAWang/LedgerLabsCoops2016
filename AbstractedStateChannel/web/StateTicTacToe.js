@@ -126,6 +126,7 @@ function signBoard(form) {
 }
 
 function sendState(form) {
+	console.log(form);
 	TicTacToeRules.sendState.sendTransaction(
 			form.state.value,
 			parseInt(form.nonce.value),
@@ -141,6 +142,50 @@ function sendState(form) {
 			}
 		);
 		alert('Call sent to blockchain.');
+}
+
+function sendBoard(form) {
+	TicTacToeRules.sendBoard.sendTransaction(
+			form.board.value,
+			parseInt(form.nonce.value),
+			parseInt(form.v.value),
+			form.r.value,
+			form.s.value,
+			{
+				from: web3.eth.accounts[$('#sender').val()],
+				gas: 4700000
+			}
+		);
+		alert('Call sent to blockchain.');
+}
+
+function badBoardSent(form) {
+	TicTacToeRules.badBoardSent.sendTransaction(
+			form.oldBoard.value,
+			parseInt(form.oldNonce.value),
+			parseInt(form.oldV.value),
+			form.oldR.value,
+			form.oldS.value,
+			form.newBoard.value,
+			parseInt(form.newNonce.value),
+			parseInt(form.newV.value),
+			form.newR.value,
+			form.newS.value,
+			{
+				from: web3.eth.accounts[$('#sender').val()],
+				gas: 4700000
+			}
+		);
+		alert('Call sent to blockchain.');
+}
+
+function checkIn(form) {
+	TicTacToeRules.checkIn.sendTransaction(
+			{
+				from: web3.eth.accounts[$('#sender').val()],
+				gas: 4700000
+			}
+		);
 }
 
 function getState(form) {
