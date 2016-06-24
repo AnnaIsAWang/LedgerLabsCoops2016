@@ -126,7 +126,6 @@ function signBoard(form) {
 }
 
 function sendState(form) {
-	console.log(form);
 	TicTacToeRules.sendState.sendTransaction(
 			form.state.value,
 			parseInt(form.nonce.value),
