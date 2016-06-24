@@ -186,6 +186,7 @@ function checkIn(form) {
 				gas: 4700000
 			}
 		);
+		alert('Call sent to blockchain.');
 }
 
 function getState(form) {
