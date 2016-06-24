@@ -264,8 +264,8 @@ contract TicTacToeRules is Rules {
         // verify the integrity of the boards
         if (
             oldNonce >= newNonce ||
-            !(signer == ecrecover(sha3(oldBoard, oldNonce, this), oldV, oldR, oldS) &&
-            signer == ecrecover(sha3(newBoard, newNonce, this), newV, newR, newS))
+            !(signer == ecrecover(sha3(oldBoard, oldNonce, address(this)), oldV, oldR, oldS) &&
+            signer == ecrecover(sha3(newBoard, newNonce, address(this)), newV, newR, newS))
         ) {
             return false;
         }
