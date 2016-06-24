@@ -318,4 +318,28 @@ contract TicTacToeRules is Rules {
             return false;
         }
     }
+
+    /**
+     * Kills contract and child contracts.
+     *
+     * recipient: recipient of killed contract funds
+     * vX, rX, sX: signature values for X
+     * vO, rO, sO: signature values for O
+     */
+    function kill(
+        address recipient,
+        uint8 vX,
+        bytes32 rX,
+        bytes32 sX,
+        uint8 vO,
+        bytes32 rO,
+        bytes32 sO
+    ) external {
+        bytes32 hash = sha3(recipient, address(this));
+        if (addressX == ecrecover(hash, vX, rX, sX) &&
+            addressO == ecrecover(hash, vO, rO, sO)) {
+            adjudicator.kill();
+            selfdestruct(recipient);
+        }
+    }
 }

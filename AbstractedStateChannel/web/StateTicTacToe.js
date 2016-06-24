@@ -125,6 +125,24 @@ function signBoard(form) {
 		);
 }
 
+function signKill(form) {
+	var toBeHashed = form.recipient.value + TicTacToeRules.address.slice(2);
+
+	var signature = sign(web3.eth.accounts[$('#sender').val()], web3.sha3(toBeHashed, {encoding: 'hex'}));
+
+	$('#killTable').append('<tr><td>'
+			+ web3.eth.accounts[$('#sender').val()]
+			+ '</td><td>'
+			+ form.recipient.value
+			+ '</td><td>'
+			+ signature[0]
+			+ '</td><td>'
+			+ signature[1]
+			+ '</td><td>'
+			+ signature[2]
+		);
+}
+
 function sendState(form) {
 	TicTacToeRules.sendState.sendTransaction(
 			form.state.value,
@@ -180,6 +198,23 @@ function badBoardSent(form) {
 
 function checkIn(form) {
 	TicTacToeRules.checkIn.sendTransaction(
+			{
+				from: web3.eth.accounts[$('#sender').val()],
+				gas: 4700000
+			}
+		);
+		alert('Call sent to blockchain.');
+}
+
+function kill(form) {
+	TicTacToeRules.kill.sendTransaction(
+			form.recipient.value,
+			parseInt(form.vX.value),
+			form.rX.value,
+			form.sX.value,
+			parseInt(form.vO.value),
+			form.rO.value,
+			form.sO.value,
 			{
 				from: web3.eth.accounts[$('#sender').val()],
 				gas: 4700000

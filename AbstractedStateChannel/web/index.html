@@ -67,6 +67,7 @@
 				<th>s</th>
 			</tr>
 		</table>
+		<br />
 
 		<h3>Sign Board</h3>
 		<form action="" method="GET">
@@ -159,6 +160,25 @@
 				<th>s</th>
 			</tr>
 		</table>
+		<br />
+
+		<h3>Sign Kill</h3>
+		<form action="" method="GET">
+			Recipient:
+			<input type="text" name="recipient" /><br />
+			<input type="button" value="Sign" onClick="signKill(this.form)" /><br />
+		</form>
+		<br />
+		<table id="killTable">
+			<tr>
+				<th>Signing Address</th>
+				<th>Recipient</th>
+				<th>v</th>
+				<th>r</th>
+				<th>s</th>
+			</tr>
+		</table>
+		<br />
 
 		<h2>Tic Tac Toe Rules</h2>
 		<h3>Send State</h3>
@@ -225,6 +245,23 @@
 			<input type="button" value="Check In" onClick="checkIn(this.form)" />
 		</form>
 		<br />
+
+		<h3>Kill</h3>
+		<form action="" method="GET">
+			Recipient:
+			<input type="text" name="recipient" /><br />
+			X's Signature<br />
+			v: <input type="number" name="vX" min="27" max="28" />
+			r: <input type="text" name="rX" />
+			s: <input type="text" name="sX" />
+			<br />
+			O's Signature<br />
+			v: <input type="number" name="vO" min="27" max="28" />
+			r: <input type="text" name="rO" />
+			s: <input type="text" name="sO" />
+			<br />
+			<input type="button" value="Kill" onClick="kill(this.form)" /><br />
+		</form>
 
 		<h2>Tic Tac Toe Adjudicator</h2>
 		<h3>Get Current State</h3>
