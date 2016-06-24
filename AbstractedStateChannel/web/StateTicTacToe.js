@@ -249,7 +249,8 @@ function giveConsent(form) {
 			signature[1],
 			signature[2],
 			{
-				from: web3.eth.accounts[$('#sender').val()]
+				from: web3.eth.accounts[$('#sender').val()],
+				gas: 4700000
 			}
 		);
 
@@ -268,7 +269,8 @@ function giveConsent(form) {
 
 function finaliseChannel(form) {
 	TicTacToeAdjudicator.finaliseChannel.sendTransaction({
-			from: web3.eth.accounts[$('#sender').val()]
+			from: web3.eth.accounts[$('#sender').val()],
+			gas: 4700000
 	});
 	alert('Call sent to blockchain.');
 }
