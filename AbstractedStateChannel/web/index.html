@@ -11,12 +11,12 @@
 	<body>
 		<h1>Tic Tac Toe on State Channels</h1>
 
-		<div class="forms" id="identity"> 
+		<div class="forms" id="identity">
 		Transaction Sender/Signer:
 		<select id="sender" class="addresses"></select>
 		</div>
 
-		<div class="container"> <h2>Contract Initialisation</h2>
+		<div class="container"><h2>Contract Initialisation</h2>
 		<h3>Create State Channel Game</h3>
 		<form action="" method="GET" class="forms">
 			Address X:
@@ -38,14 +38,14 @@
 		<br />
 		</div>
 
-		<div class="signatures"> <h2>Signatures</h2>
+		<div class="signatures"><h2>Signatures</h2>
 		<h3>Sign State</h3>
 		<form action="" method="GET" class="forms">
 			Nonce:
 			<input type="number" name="nonce" min="0" /><br />
-			<input type="radio" name="winner" value="0" /> Tie
-			<input type="radio" name="winner" value="1" /> X wins
-			<input type="radio" name="winner" value="2" /> O wins
+			<input type="radio" name="winner" value="0" />Tie
+			<input type="radio" name="winner" value="1" />X wins
+			<input type="radio" name="winner" value="2" />O wins
 			<br />
 			<input type="checkbox" name="adjudicationDepositX" value="4" />X loses adjudication deposit
 			<br />
@@ -183,7 +183,7 @@
 		</table>
 		<br />
 
-		<div class="rules"> <h2>Tic Tac Toe Rules</h2>
+		<div class="rules"><h2>Tic Tac Toe Rules</h2>
 		<h3>Send State</h3>
 		<form action="" method="GET" class="forms">
 			State:
@@ -192,12 +192,12 @@
 			<input type="number" name="nonce" min="0" /><br />
 			X's Signature<br />
 			v: <input type="number" name="vX" min="27" max="28" />
-			r: <input type="text" name="rX" class="signature"/> <br>
+			r: <input type="text" name="rX" class="signature"/><br />
 			s: <input type="text" name="sX" class="signature"/>
 			<br />
 			O's Signature<br />
 			v: <input type="number" name="vO" min="27" max="28" />
-			r: <input type="text" name="rO" class="signature"/> <br>
+			r: <input type="text" name="rO" class="signature"/><br />
 			s: <input type="text" name="sO" class="signature"/>
 			<br />
 			<input type="button" value="Send" onClick="sendState(this.form)" /><br />
@@ -227,7 +227,7 @@
 			<input type="number" name="oldNonce" min="0" /><br />
 			Old Signature<br />
 			v: <input type="number" name="oldV" min="27" max="28" />
-			r: <input type="text" name="oldR" class="signature"/> <br>
+			r: <input type="text" name="oldR" class="signature"/><br />
 			s: <input type="text" name="oldS" class="signature"/>
 			<br />
 			New Board:
@@ -303,19 +303,19 @@
 		<form action="" method="GET">
 			<input type="button" value="Finalise" onClick="finaliseChannel(this.form)" />
 		</form>
-		<br /> </div>
+		<br /></div>
 
 		<div class="lockedState"><h2>Tic Tac Toe Locked State</h2>
 		<h3>Deposit Funds</h3>
 		<form action="" method="GET" class="forms">
 			Deposit (in Wei):
-			<input type="number" name="amount" min="0" /><br /> <br>
+			<input type="number" name="amount" min="0" /><br /><br />
 			Account:<br />
-			<input type="radio" name="account" value="0" />X's bet <br>
-			<input type="radio" name="account" value="1" />O's bet <br>
-			<input type="radio" name="account" value="2" />X's adjudication deposit <br>
-			<input type="radio" name="account" value="3" />O's adjudication deposit <br>
-			<input type="radio" name="account" value="4" />X's disconnect deposit <br>
+			<input type="radio" name="account" value="0" />X's bet<br />
+			<input type="radio" name="account" value="1" />O's bet<br />
+			<input type="radio" name="account" value="2" />X's adjudication deposit<br />
+			<input type="radio" name="account" value="3" />O's adjudication deposit<br />
+			<input type="radio" name="account" value="4" />X's disconnect deposit<br />
 			<input type="radio" name="account" value="5" />O's disconnect deposit
 			<br />
 			<input type="button" value="Deposit Funds" onClick="depositFunds(this.form)" class="button" /><br />
@@ -325,14 +325,14 @@
 		<h3>Get Balance</h3>
 		<form action="" method="GET" class="forms">
 			Account:<br />
-			<input type="radio" name="account" value="0" />X's bet <br>
-			<input type="radio" name="account" value="1" />O's bet <br>
-			<input type="radio" name="account" value="2" />X's adjudication deposit <br>
-			<input type="radio" name="account" value="3" />O's adjudication deposit <br>
-			<input type="radio" name="account" value="4" />X's disconnect deposit <br>
+			<input type="radio" name="account" value="0" />X's bet<br />
+			<input type="radio" name="account" value="1" />O's bet<br />
+			<input type="radio" name="account" value="2" />X's adjudication deposit<br />
+			<input type="radio" name="account" value="3" />O's adjudication deposit<br />
+			<input type="radio" name="account" value="4" />X's disconnect deposit<br />
 			<input type="radio" name="account" value="5" />O's disconnect deposit
 			<br />
 			<input type="button" value="Get Balance" onClick="getBalance(this.form)" /><br />
-		</form> </div>
+		</form></div>
 	</body>
 </html>
