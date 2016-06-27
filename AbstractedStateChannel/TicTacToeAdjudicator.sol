@@ -18,8 +18,8 @@ contract TicTacToeAdjudicator is Adjudicator {
     function TicTacToeAdjudicator(address addressX, address addressO, uint _timeout)
         Adjudicator(new address[](2), 2, _timeout)
     {
-        addresses[0] = addressX;
-        addresses[1] = addressO;
+        addresses = [addressX, addressO];
+        lockedState = createLockedState();
     }
 
     // creates and returns a new TicTacToeLockedState

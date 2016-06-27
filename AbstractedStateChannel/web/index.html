@@ -1,0 +1,331 @@
+<html>
+	<head>
+		<title>Tic Tac Toe on State Channels</title>
+		<link rel="shortcut icon" href="/favicon.png" />
+		<link rel="stylesheet" href="/style.css" />
+		<script src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+		<script src="/web3.js/dist/web3.min.js"></script>
+		<script src="/Constants.js"></script>
+		<script src="/StateTicTacToe.js"></script>
+	</head>
+	<body>
+		<h1>Tic Tac Toe on State Channels</h1>
+
+		<div class="forms" id="identity">
+		Transaction Sender/Signer:
+		<select id="sender" class="addresses"></select>
+		</div>
+
+		<div class="container"><h2>Contract Initialisation</h2>
+		<h3>Create State Channel Game</h3>
+		<form action="" method="GET" class="forms">
+			Address X:
+			<select name="addressX" class="addresses"></select><br />
+			Address O:
+			<select name="addressO" class="addresses"></select><br />
+			Timeout (seconds):
+			<input type="number" name="timeout" min="0" /><br />
+			<input type="button" value="Create Contract" onClick="createTicTacToeRules(this.form)" /><br />
+		</form>
+		<br />
+
+		<h3>Attach to Existing Contract</h3>
+		<form action="" method="GET" id="existingContract" class="forms">
+			Address of Rules:
+			<input type="text" name="address" class="address" /><br />
+			<input type="button" value="Attach to Contract" onClick="attachToContract(this.form)" /><br />
+		</form>
+		<br />
+		</div>
+
+		<div class="signatures"><h2>Signatures</h2>
+		<h3>Sign State</h3>
+		<form action="" method="GET" class="forms">
+			Nonce:
+			<input type="number" name="nonce" min="0" /><br />
+			<input type="radio" name="winner" value="0" />Tie
+			<input type="radio" name="winner" value="1" />X wins
+			<input type="radio" name="winner" value="2" />O wins
+			<br />
+			<input type="checkbox" name="adjudicationDepositX" value="4" />X loses adjudication deposit
+			<br />
+			<input type="checkbox" name="adjudicationDepositO" value="8" />O loses adjudication deposit
+			<br />
+			<input type="checkbox" name="disconnectDepositX" value="16" />X loses disconnect deposit
+			<br />
+			<input type="checkbox" name="disconnectDepositO" value="32" />O loses disconnect deposit
+			<br />
+			<input type="checkbox" name="immutable" value="64" />Immutable
+			<br />
+			<input type="button" value="Sign" onClick="signState(this.form)" /><br />
+		</form>
+		<br />
+		<table id="stateTable">
+			<tr>
+				<th>Signing Address</th>
+				<th>State</th>
+				<th>Nonce</th>
+				<th>v</th>
+				<th>r</th>
+				<th>s</th>
+			</tr>
+		</table>
+		<br />
+
+		<h3>Sign Board</h3>
+		<form action="" method="GET" class="forms">
+			Nonce:
+			<input type="number" name="nonce" min="0" /><br />
+			Board:
+			<table class="board">
+				<tr>
+					<td>
+						<select name="0" class="boardItem">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="1" class="boardItem">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="2" class="boardItem">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+				</tr><tr>
+					<td>
+						<select name="3" class="boardItem">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="4" class="boardItem">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="5" class="boardItem">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+				</tr><tr>
+					<td>
+						<select name="6" class="boardItem">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="7" class="boardItem">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+					<td>
+						<select name="8" class="boardItem">
+							<option value="0"></option>
+							<option value="1">X</option>
+							<option value="4">O</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+			Last Player:<br />
+			<input type="radio" name="lastPlayer" value="1" />X
+			<input type="radio" name="lastPlayer" value="4" />O
+			<br />
+			<input type="button" value="Sign" onClick="signBoard(this.form)" /><br />
+		</form>
+		<br />
+		<table id="boardTable">
+			<tr>
+				<th>Signing Address</th>
+				<th>Board</th>
+				<th>Nonce</th>
+				<th>v</th>
+				<th>r</th>
+				<th>s</th>
+			</tr>
+		</table>
+		<br />
+
+		<h3>Sign Kill</h3>
+		<form action="" method="GET" class="forms">
+			Recipient:
+			<input type="text" name="recipient" /><br />
+			<input type="button" value="Sign" onClick="signKill(this.form)" /><br />
+		</form>
+		<br />
+		<table id="killTable">
+			<tr>
+				<th>Signing Address</th>
+				<th>Recipient</th>
+				<th>v</th>
+				<th>r</th>
+				<th>s</th>
+			</tr>
+		</table></div>
+		<br />
+
+		<div class="rules"><h2>Tic Tac Toe Rules</h2>
+		<h3>Send State</h3>
+		<form action="" method="GET" class="forms">
+			State:
+			<input type="text" name="state" class="state"/><br />
+			Nonce:
+			<input type="number" name="nonce" min="0" /><br />
+			X's Signature<br />
+			v: <input type="number" name="vX" min="27" max="28" class="signature"/><br />
+			r: <input type="text" name="rX" class="signature"/><br />
+			s: <input type="text" name="sX" class="signature"/><br />
+			O's Signature<br />
+			v: <input type="number" name="vO" min="27" max="28" class="signature" /><br />
+			r: <input type="text" name="rO" class="signature"/><br />
+			s: <input type="text" name="sO" class="signature"/><br />
+			<input type="button" value="Send" onClick="sendState(this.form)" /><br />
+		</form>
+		<br />
+
+		<h3>Send Board</h3>
+		<form action="" method="GET" class="forms">
+			Board:
+			<input type="text" name="board" /><br />
+			Nonce:
+			<input type="number" name="nonce" min="0" /><br />
+			Signature<br />
+			v: <input type="number" name="v" min="27" max="28" class="signature" /><br />
+			r: <input type="text" name="r" class="signature"/><br />
+			s: <input type="text" name="s" class="signature"/><br />
+			<input type="button" value="Send" onClick="sendBoard(this.form)" /><br />
+		</form>
+		<br />
+
+		<h3>Bad Board Sent</h3>
+		<form action="" method="GET" class="forms">
+			Old Board:
+			<input type="text" name="oldBoard" /><br />
+			Old Nonce:
+			<input type="number" name="oldNonce" min="0" /><br />
+			Old Signature<br />
+			v: <input type="number" name="oldV" min="27" max="28" class="signature" /><br />
+			r: <input type="text" name="oldR" class="signature"/><br />
+			s: <input type="text" name="oldS" class="signature"/><br />
+			New Board:
+			<input type="text" name="newBoard" /><br />
+			New Nonce:
+			<input type="number" name="newNonce" min="0" /><br />
+			New Signature<br />
+			v: <input type="number" name="newV" min="27" max="28" class="signature"/><br />
+			r: <input type="text" name="newR" class="signature"/><br />
+			s: <input type="text" name="newS" class="signature"/><br />
+			<input type="button" value="Send" onClick="badBoardSent(this.form)" /><br />
+		</form>
+		<br />
+
+		<h3>Check In</h3>
+		<form action="" method="GET">
+			<input type="button" value="Check In" onClick="checkIn(this.form)" />
+		</form>
+		<br />
+
+		<h3>Kill</h3>
+		<form action="" method="GET" class="forms">
+			Recipient:
+			<input type="text" name="recipient" /><br />
+			X's Signature<br />
+			v: <input type="number" name="vX" min="27" max="28" class="signature" /><br />
+			r: <input type="text" name="rX" class="signature" /><br />
+			s: <input type="text" name="sX" class="signature" /><br />
+			O's Signature<br />
+			v: <input type="number" name="vO" min="27" max="28" class="signature" /><br />
+			r: <input type="text" name="rO" class="signature" /><br />
+			s: <input type="text" name="sO" class="signature" /><br />
+			<input type="button" value="Kill" onClick="kill(this.form)" /><br />
+		</form></div>
+
+		<div class="adjudicator"><h2>Tic Tac Toe Adjudicator</h2>
+
+		<h3>Get Current State</h3>
+		<form action="" method="GET">
+			<input type="button" value="Get Last Sent State" onClick="getState(this.form)" />
+		</form>
+		<br />
+
+
+		<h3>Get Nonce</h3>
+		<form action="" method="GET">
+			<input type="button" value="Get Last Sent Nonce" onClick="getNonce(this.form)" />
+		</form>
+		<br />
+
+		<h3>Give Consent</h3>
+		<form action="" method="GET" class="forms">
+			Nonce:
+			<input type="number" name="nonce" min="0" /><br />
+			<br />
+			<input type="button" value="Sign" onClick="giveConsent(this.form)" /><br />
+		</form>
+		<br />
+		<table id="consentTable">
+			<tr>
+				<th>Signing Address</th>
+				<th>Nonce</th>
+				<th>v</th>
+				<th>r</th>
+				<th>s</th>
+			</tr>
+		</table>
+
+		<h3>Finalise Channel</h3>
+		<form action="" method="GET">
+			<input type="button" value="Finalise" onClick="finaliseChannel(this.form)" />
+		</form>
+		<br /></div>
+
+		<div class="lockedState"><h2>Tic Tac Toe Locked State</h2>
+		<h3>Deposit Funds</h3>
+		<form action="" method="GET" class="forms">
+			Deposit (in Wei):
+			<input type="number" name="amount" min="0" /><br /><br />
+			Account:<br />
+			<input type="radio" name="account" value="0" />X's bet<br />
+			<input type="radio" name="account" value="1" />O's bet<br />
+			<input type="radio" name="account" value="2" />X's adjudication deposit<br />
+			<input type="radio" name="account" value="3" />O's adjudication deposit<br />
+			<input type="radio" name="account" value="4" />X's disconnect deposit<br />
+			<input type="radio" name="account" value="5" />O's disconnect deposit
+			<br />
+			<input type="button" value="Deposit Funds" onClick="depositFunds(this.form)" class="button" /><br />
+		</form>
+		<br />
+
+		<h3>Get Balance</h3>
+		<form action="" method="GET" class="forms">
+			Account:<br />
+			<input type="radio" name="account" value="0" />X's bet<br />
+			<input type="radio" name="account" value="1" />O's bet<br />
+			<input type="radio" name="account" value="2" />X's adjudication deposit<br />
+			<input type="radio" name="account" value="3" />O's adjudication deposit<br />
+			<input type="radio" name="account" value="4" />X's disconnect deposit<br />
+			<input type="radio" name="account" value="5" />O's disconnect deposit
+			<br />
+			<input type="button" value="Get Balance" onClick="getBalance(this.form)" /><br />
+		</form></div>
+	</body>
+</html>

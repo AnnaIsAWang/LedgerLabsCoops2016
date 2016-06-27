@@ -1,0 +1,120 @@
+body {
+	background-color: #ffeb99;
+	text-align: center;
+}
+
+h3, p, .forms {
+	color: #663300;
+}
+
+h1 {
+	font-size: 50px;
+	color: black;
+}
+
+h2 {
+	font-size: 35px;
+	color: #4d3219;
+}
+
+h3 {
+	font-size: 23px;
+}
+
+.forms {
+	font-size: 20px;
+}
+
+input[type=button] {
+	padding: 10px;
+	background-color: #ccff66;
+	border: none;
+	font-size: 20px;
+}
+
+input[type=button]:hover {
+	background-color: #e6ffb3;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table, th, td {
+	border: 1px solid black;
+	padding: 5px;
+}
+
+th {
+	width: 1000px;
+	background-color: #ffbb33;
+}
+
+#identity {
+	font-weight: bold;
+	font-size: 20px;
+}
+
+select, option {
+	padding: 5px;
+	border: none;
+	font-size: 15px;
+	margin-bottom: 5px;
+	background-color: #99ddff;
+}
+
+select:hover {
+	background-color: #ccefff;
+}
+
+input[type=number], input[type=text] {
+	padding: 10px;
+	font-size: 15px;
+}
+
+input[type=radio], input[type=checkbox] {
+	background-color: white;
+}
+
+.address {
+	width: 360px;
+}
+
+.signature {
+	width: 575px;
+}
+
+.container {
+	background-color: #ffff99;
+	padding: 10px;
+	margin-top: 10px;
+	margin-left: 322px;
+	width: 600px;
+}
+
+/* Gotta figure out a way to not make table overflow off div */
+.signatures, .adjudicator {
+	background-color: #ffff99;
+	padding: 10px;
+	margin-top: 50px;
+}
+
+.rules {
+	background-color: #ffff99;
+	padding: 10px;
+	margin-top: 50px;
+	margin-left: 222px;
+	width: 800px;
+}
+
+.lockedState {
+	background-color: #ffff99;
+	padding: 10px;
+	margin-top: 50px;
+	margin-left: 322px;
+	width: 600px;
+}
+
+.board {
+	margin-left: 555px;
+}

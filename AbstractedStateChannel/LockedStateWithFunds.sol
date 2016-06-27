@@ -18,16 +18,16 @@ contract LockedStateWithFunds is LockedState {
      * toCheck: the address to check the balance for
      * returns: the balance
      */
-    function getBalance(address toCheck) constant returns (uint) {
+    function getBalance(address toCheck) constant external notBroadcast returns (uint) {
         return balances[toCheck];
     }
 
-	// Adds funds to the recipient account
-    function addFunds(address recipient) {
+    // Adds funds to the recipient account
+    function addFunds(address recipient) notBroadcast {
         balances[recipient] += msg.value;
     }
 
-	// By default, funds are added to the sender's account
+    // By default, funds are added to the sender's account
     function () {
         addFunds(msg.sender);
     }

@@ -39,7 +39,6 @@ contract Adjudicator is Owned {
         addresses = _addresses;
         consenters = _consenters;
         timeout = _timeout;
-        lockedState = createLockedState();
     }
 
     // An abstract method which should create and return a LockedState. The LockedState will be owned by this contract.
@@ -60,10 +59,14 @@ contract Adjudicator is Owned {
     }
 
     // Gets the address of the LockedState
-    function getLockedStateAddress() constant external returns (address lockedState) {}
+    function getLockedStateAddress() constant external returns (address) {
+        return lockedState;
+    }
 
     // Gets the current nonce
-    function getNonce() constant external returns (uint nonce) {}
+    function getNonce() constant external returns (uint) {
+        return nonce;
+    }
 
     /**
      * Checks signatures and updates the state as necessary.
@@ -126,7 +129,7 @@ contract Adjudicator is Owned {
      * r: the r value of the signature
      * s: the s value of the signature
      */
-    function giveConsent(uint8 v, bytes32 r, bytes32 s) {
+    function giveConsent(uint8 v, bytes32 r, bytes32 s) external {
         address consenter = ecrecover(sha3(nonce, address(owner)), v, r, s);
         consentGiven[consenter] = nonce;
         ConsentGiven(consenter, nonce);

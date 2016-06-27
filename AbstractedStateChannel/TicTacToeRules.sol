@@ -35,6 +35,7 @@ contract TicTacToeRules is Rules {
         addressX = _addressX;
         addressO = _addressO;
         timeout = _timeout;
+        adjudicator = createAdjudicator();
     }
 
     function createAdjudicator() internal returns (Adjudicator newAdjudicator) {
@@ -124,8 +125,6 @@ contract TicTacToeRules is Rules {
         ) {
             return false;
         }
-
-        // do something about what happens if you send old boards???
 
         // checking wins
         // checking |
@@ -220,7 +219,7 @@ contract TicTacToeRules is Rules {
         for (i = 0; i < 9; i++) {
             if (uint(board[i]) == BLANK) {
                 // last player wins
-                if (unilateralRuling(uintState | uint(board[9]) == X ? 0x01 : 0x02, nonce)) {// bets sent to last player
+                if (unilateralRuling(uintState | (uint(board[9]) == X ? 0x01 : 0x02), nonce)) {// bets sent to last player
                     BoardWinner(uint(board[9]) == X ? addressX : addressO);
                     return true;
                 } else {
@@ -262,8 +261,9 @@ contract TicTacToeRules is Rules {
         address signer = uint(newBoard[9]) == X ? addressX : addressO;
         // verify the integrity of the boards
         if (
-            !(signer == ecrecover(sha3(oldBoard, oldNonce, this), oldV, oldR, oldS) &&
-            signer == ecrecover(sha3(newBoard, newNonce, this), newV, newR, newS))
+            oldNonce >= newNonce ||
+            !(signer == ecrecover(sha3(oldBoard, oldNonce, address(this)), oldV, oldR, oldS) &&
+            signer == ecrecover(sha3(newBoard, newNonce, address(this)), newV, newR, newS))
         ) {
             return false;
         }
@@ -314,6 +314,30 @@ contract TicTacToeRules is Rules {
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Kills contract and child contracts.
+     *
+     * recipient: recipient of killed contract funds
+     * vX, rX, sX: signature values for X
+     * vO, rO, sO: signature values for O
+     */
+    function kill(
+        address recipient,
+        uint8 vX,
+        bytes32 rX,
+        bytes32 sX,
+        uint8 vO,
+        bytes32 rO,
+        bytes32 sO
+    ) external {
+        bytes32 hash = sha3(recipient, address(this));
+        if (addressX == ecrecover(hash, vX, rX, sX) &&
+            addressO == ecrecover(hash, vO, rO, sO)) {
+            adjudicator.kill();
+            selfdestruct(recipient);
         }
     }
 }
