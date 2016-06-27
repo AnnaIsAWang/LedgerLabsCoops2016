@@ -162,11 +162,11 @@
 				<th>r</th>
 				<th>s</th>
 			</tr>
-		</table></div>
+		</table>
 		<br />
 
 		<h3>Sign Kill</h3>
-		<form action="" method="GET">
+		<form action="" method="GET" class="forms">
 			Recipient:
 			<input type="text" name="recipient" /><br />
 			<input type="button" value="Sign" onClick="signKill(this.form)" /><br />
@@ -180,7 +180,7 @@
 				<th>r</th>
 				<th>s</th>
 			</tr>
-		</table>
+		</table></div>
 		<br />
 
 		<div class="rules"><h2>Tic Tac Toe Rules</h2>
@@ -191,15 +191,13 @@
 			Nonce:
 			<input type="number" name="nonce" min="0" /><br />
 			X's Signature<br />
-			v: <input type="number" name="vX" min="27" max="28" />
+			v: <input type="number" name="vX" min="27" max="28" class="signature"/><br />
 			r: <input type="text" name="rX" class="signature"/><br />
-			s: <input type="text" name="sX" class="signature"/>
-			<br />
+			s: <input type="text" name="sX" class="signature"/><br />
 			O's Signature<br />
-			v: <input type="number" name="vO" min="27" max="28" />
+			v: <input type="number" name="vO" min="27" max="28" class="signature" /><br />
 			r: <input type="text" name="rO" class="signature"/><br />
-			s: <input type="text" name="sO" class="signature"/>
-			<br />
+			s: <input type="text" name="sO" class="signature"/><br />
 			<input type="button" value="Send" onClick="sendState(this.form)" /><br />
 		</form>
 		<br />
@@ -211,10 +209,9 @@
 			Nonce:
 			<input type="number" name="nonce" min="0" /><br />
 			Signature<br />
-			v: <input type="number" name="v" min="27" max="28" />
+			v: <input type="number" name="v" min="27" max="28" class="signature" /><br />
 			r: <input type="text" name="r" class="signature"/><br />
-			s: <input type="text" name="s" class="signature"/>
-			<br />
+			s: <input type="text" name="s" class="signature"/><br />
 			<input type="button" value="Send" onClick="sendBoard(this.form)" /><br />
 		</form>
 		<br />
@@ -226,19 +223,17 @@
 			Old Nonce:
 			<input type="number" name="oldNonce" min="0" /><br />
 			Old Signature<br />
-			v: <input type="number" name="oldV" min="27" max="28" />
+			v: <input type="number" name="oldV" min="27" max="28" class="signature" /><br />
 			r: <input type="text" name="oldR" class="signature"/><br />
-			s: <input type="text" name="oldS" class="signature"/>
-			<br />
+			s: <input type="text" name="oldS" class="signature"/><br />
 			New Board:
 			<input type="text" name="newBoard" /><br />
 			New Nonce:
 			<input type="number" name="newNonce" min="0" /><br />
 			New Signature<br />
-			v: <input type="number" name="newV" min="27" max="28" />
+			v: <input type="number" name="newV" min="27" max="28" class="signature"/><br />
 			r: <input type="text" name="newR" class="signature"/><br />
-			s: <input type="text" name="newS" class="signature"/>
-			<br />
+			s: <input type="text" name="newS" class="signature"/><br />
 			<input type="button" value="Send" onClick="badBoardSent(this.form)" /><br />
 		</form>
 		<br />
@@ -247,24 +242,22 @@
 		<form action="" method="GET">
 			<input type="button" value="Check In" onClick="checkIn(this.form)" />
 		</form>
-		<br /></div>
+		<br />
 
 		<h3>Kill</h3>
-		<form action="" method="GET">
+		<form action="" method="GET" class="forms">
 			Recipient:
 			<input type="text" name="recipient" /><br />
 			X's Signature<br />
-			v: <input type="number" name="vX" min="27" max="28" />
-			r: <input type="text" name="rX" />
-			s: <input type="text" name="sX" />
-			<br />
+			v: <input type="number" name="vX" min="27" max="28" class="signature" /><br />
+			r: <input type="text" name="rX" class="signature" /><br />
+			s: <input type="text" name="sX" class="signature" /><br />
 			O's Signature<br />
-			v: <input type="number" name="vO" min="27" max="28" />
-			r: <input type="text" name="rO" />
-			s: <input type="text" name="sO" />
-			<br />
+			v: <input type="number" name="vO" min="27" max="28" class="signature" /><br />
+			r: <input type="text" name="rO" class="signature" /><br />
+			s: <input type="text" name="sO" class="signature" /><br />
 			<input type="button" value="Kill" onClick="kill(this.form)" /><br />
-		</form>
+		</form></div>
 
 		<div class="adjudicator"><h2>Tic Tac Toe Adjudicator</h2>
 
