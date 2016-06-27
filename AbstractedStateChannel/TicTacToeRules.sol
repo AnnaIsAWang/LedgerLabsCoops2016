@@ -126,8 +126,6 @@ contract TicTacToeRules is Rules {
             return false;
         }
 
-        // do something about what happens if you send old boards???
-
         // checking wins
         // checking |
         for (x = 0; x < 3; x++) {
