@@ -221,7 +221,7 @@ contract TicTacToeRules is Rules {
         for (i = 0; i < 9; i++) {
             if (uint(board[i]) == BLANK) {
                 // last player wins
-                if (unilateralRuling(uintState | uint(board[9]) == X ? 0x01 : 0x02, nonce)) {// bets sent to last player
+                if (unilateralRuling(uintState | (uint(board[9]) == X ? 0x01 : 0x02), nonce)) {// bets sent to last player
                     BoardWinner(uint(board[9]) == X ? addressX : addressO);
                     return true;
                 } else {
