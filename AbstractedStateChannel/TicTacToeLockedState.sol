@@ -108,6 +108,8 @@ contract TicTacToeLockedState is LockedState {
         sendToX += (uintState & 0x04 == 0x00 ? funds[2] : 0) + (uintState & 0x10 == 0x00 ? funds[4] : 0);
         sendToO += (uintState & 0x08 == 0x00 ? funds[3] : 0) + (uintState & 0x20 == 0x00 ? funds[5] : 0);
 
+        broadcast = true;
+
         if (!addressX.send(sendToX)) {
             throw;
         }
@@ -121,7 +123,6 @@ contract TicTacToeLockedState is LockedState {
             throw;
         }
 
-        broadcast = true;
         return true;
     }
 
