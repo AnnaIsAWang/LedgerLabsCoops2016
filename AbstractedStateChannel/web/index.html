@@ -7,6 +7,7 @@
 		<script src="/web3.js/dist/web3.min.js"></script>
 		<script src="/Constants.js"></script>
 		<script src="/StateTicTacToe.js"></script>
+		<script src="/tests.js"></script>
 	</head>
 	<body>
 		<h1>Tic Tac Toe on State Channels</h1>
@@ -25,7 +26,7 @@
 			<select name="addressO" class="addresses"></select><br />
 			Timeout (seconds):
 			<input type="number" name="timeout" min="0" /><br />
-			<input type="button" value="Create Contract" onClick="createTicTacToeRules(this.form)" /><br />
+			<input type="button" value="Create Contract" onClick="createTicTacToeRules(this.form)" id="createContract" /><br />
 		</form>
 		<br />
 
@@ -33,7 +34,7 @@
 		<form action="" method="GET" id="existingContract" class="forms">
 			Address of Rules:
 			<input type="text" name="address" class="address" /><br />
-			<input type="button" value="Attach to Contract" onClick="attachToContract(this.form)" /><br />
+			<input type="button" value="Attach to Contract" onClick="attachToContract(this.form)" id="attach" /><br />
 		</form>
 		<br />
 		</div>
@@ -42,7 +43,7 @@
 		<h3>Sign State</h3>
 		<form action="" method="GET" class="forms">
 			Nonce:
-			<input type="number" name="nonce" min="0" /><br />
+			<input type="number" name="nonce" min="0" id="stateNonce" /><br />
 			<input type="radio" name="winner" value="0" />Tie
 			<input type="radio" name="winner" value="1" />X wins
 			<input type="radio" name="winner" value="2" />O wins
@@ -57,7 +58,7 @@
 			<br />
 			<input type="checkbox" name="immutable" value="64" />Immutable
 			<br />
-			<input type="button" value="Sign" onClick="signState(this.form)" /><br />
+			<input type="button" value="Sign" onClick="signState(this.form)" id="SignTheState" /><br />
 		</form>
 		<br />
 		<table id="stateTable">
@@ -189,16 +190,16 @@
 			State:
 			<input type="text" name="state" class="state"/><br />
 			Nonce:
-			<input type="number" name="nonce" min="0" /><br />
+			<input type="number" name="nonce" min="0" id="sendStateNonce" /><br />
 			X's Signature<br />
-			v: <input type="number" name="vX" min="27" max="28" class="signature"/><br />
-			r: <input type="text" name="rX" class="signature"/><br />
-			s: <input type="text" name="sX" class="signature"/><br />
+			v: <input type="number" name="vX" min="27" max="28" class="signature" /><br />
+			r: <input type="text" name="rX" class="signature" /><br />
+			s: <input type="text" name="sX" class="signature" /><br />
 			O's Signature<br />
-			v: <input type="number" name="vO" min="27" max="28" class="signature" /><br />
+			v: <input type="number" name="vO" min="27" max="28" class="signature"/><br />
 			r: <input type="text" name="rO" class="signature"/><br />
 			s: <input type="text" name="sO" class="signature"/><br />
-			<input type="button" value="Send" onClick="sendState(this.form)" /><br />
+			<input type="button" value="Send" onClick="sendState(this.form)" id="SendTheState" /><br />
 		</form>
 		<br />
 
@@ -327,5 +328,7 @@
 			<br />
 			<input type="button" value="Get Balance" onClick="getBalance(this.form)" /><br />
 		</form></div>
+		<br>
+		<input type="button" value="Click here to run some tests" onClick="tests()">
 	</body>
 </html>
