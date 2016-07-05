@@ -8,6 +8,8 @@ import "Owned.sol";
  */
 contract LockedState is Owned {
 
+	event Killed(address);
+
     // indicates whether the LockedState has been broadcast
     bool broadcast = false;
 
@@ -29,6 +31,7 @@ contract LockedState is Owned {
 
     // kills the contract
     function kill() external onlyOwner {
+		Killed(owner);
         selfdestruct(owner);
     }
 }

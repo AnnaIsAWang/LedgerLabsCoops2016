@@ -143,8 +143,6 @@ function signKill(form) {
 		);
 }
 
-var check;
-
 function sendState(form) {
 	TicTacToeRules.sendState.sendTransaction(
 			form.state.value,
@@ -158,19 +156,6 @@ function sendState(form) {
 			{
 				from: web3.eth.accounts[$('#sender').val()],
 				gas: 4700000
-			}, function (e, result) {
-				txhash = result;
-        			filter = web3.eth.filter('latest');
-        			filter.watch(function(error, result) {
-            				var receipt = web3.eth.getTransactionReceipt(txhash);
-            				if (receipt && receipt.transactionHash == txhash) {
-                				check = [TicTacToeAdjudicator.getNonce(), TicTacToeAdjudicator.getStateAt(0)];
-                				console.log(check);
-                				console.log(TicTacToeAdjudicator.getNonce());
-                				console.log(TicTacToeAdjudicator.getStateAt(0));
-                				filter.stopWatching();
-            				}
-        			});
 			}
 		);
 		alert('Call sent to blockchain.');

@@ -74,9 +74,9 @@
 		<br />
 
 		<h3>Sign Board</h3>
-		<form action="" method="GET" class="forms">
+		<form action="" method="GET" class="forms" id="board">
 			Nonce:
-			<input type="number" name="nonce" min="0" /><br />
+			<input type="number" name="nonce" min="0" id="boardNonce" /><br />
 			Board:
 			<table class="board">
 				<tr>
@@ -151,7 +151,7 @@
 			<input type="radio" name="lastPlayer" value="1" />X
 			<input type="radio" name="lastPlayer" value="4" />O
 			<br />
-			<input type="button" value="Sign" onClick="signBoard(this.form)" /><br />
+			<input type="button" value="Sign" onClick="signBoard(this.form)" id="SignTheBoard" /><br />
 		</form>
 		<br />
 		<table id="boardTable">
@@ -186,7 +186,7 @@
 
 		<div class="rules"><h2>Tic Tac Toe Rules</h2>
 		<h3>Send State</h3>
-		<form action="" method="GET" class="forms">
+		<form action="" method="GET" class="forms" id="sendState">
 			State:
 			<input type="text" name="state" class="state"/><br />
 			Nonce:
@@ -204,11 +204,11 @@
 		<br />
 
 		<h3>Send Board</h3>
-		<form action="" method="GET" class="forms">
+		<form action="" method="GET" class="forms" id="sendBoard">
 			Board:
 			<input type="text" name="board" /><br />
 			Nonce:
-			<input type="number" name="nonce" min="0" /><br />
+			<input type="number" name="nonce" min="0" id="sendBoardNonce" /><br />
 			Signature<br />
 			v: <input type="number" name="v" min="27" max="28" class="signature" /><br />
 			r: <input type="text" name="r" class="signature"/><br />
@@ -218,7 +218,7 @@
 		<br />
 
 		<h3>Bad Board Sent</h3>
-		<form action="" method="GET" class="forms">
+		<form action="" method="GET" class="forms" id="badBoardSent">
 			Old Board:
 			<input type="text" name="oldBoard" /><br />
 			Old Nonce:
