@@ -169,8 +169,8 @@
 		<h3>Sign Kill</h3>
 		<form action="" method="GET" class="forms">
 			Recipient:
-			<input type="text" name="recipient" /><br />
-			<input type="button" value="Sign" onClick="signKill(this.form)" /><br />
+			<input type="text" name="recipient" class="address" /><br />
+			<input type="button" value="Sign" onClick="signKill(this.form)" id="SignTheKill" /><br />
 		</form>
 		<br />
 		<table id="killTable">
@@ -246,9 +246,9 @@
 		<br />
 
 		<h3>Kill</h3>
-		<form action="" method="GET" class="forms">
+		<form action="" method="GET" class="forms" id="kill">
 			Recipient:
-			<input type="text" name="recipient" /><br />
+			<input type="text" name="recipient" class="address" /><br />
 			X's Signature<br />
 			v: <input type="number" name="vX" min="27" max="28" class="signature" /><br />
 			r: <input type="text" name="rX" class="signature" /><br />
@@ -276,9 +276,9 @@
 		<br />
 
 		<h3>Give Consent</h3>
-		<form action="" method="GET" class="forms">
+		<form action="" method="GET" class="forms" id="consent" >
 			Nonce:
-			<input type="number" name="nonce" min="0" /><br />
+			<input type="number" name="nonce" min="0" id="consentNonce" /><br />
 			<br />
 			<input type="button" value="Sign" onClick="giveConsent(this.form)" /><br />
 		</form>
@@ -301,7 +301,7 @@
 
 		<div class="lockedState"><h2>Tic Tac Toe Locked State</h2>
 		<h3>Deposit Funds</h3>
-		<form action="" method="GET" class="forms">
+		<form action="" method="GET" class="forms" id="deposit">
 			Deposit (in Wei):
 			<input type="number" name="amount" min="0" /><br /><br />
 			Account:<br />

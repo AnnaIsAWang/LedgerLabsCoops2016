@@ -23,6 +23,8 @@ contract TicTacToeLockedState is LockedState {
 
     uint[6] funds;
 
+	event Deposited(uint account);
+
     /**
      * addressX: the address of X
      * addressO: the address of O
@@ -49,6 +51,7 @@ contract TicTacToeLockedState is LockedState {
         if (account >= 6) {
             throw;
         } else {
+			Deposited(account);
             funds[account] += msg.value;
         }
     }
@@ -57,7 +60,8 @@ contract TicTacToeLockedState is LockedState {
      * Returns the balance of the account corresponding to the above.
      */
     function getBalance(uint account) constant external notBroadcast returns (uint) {
-        if (account >= 6) { throw;
+        if (account >= 6) { 
+			throw;
         } else {
             return funds[account];
         }

@@ -8,11 +8,15 @@ if (typeof web3 !== 'undefined') {
 function tests() {
 	// createContractSimulation();
 	attach();
-	// sendStateSimulation(2, "0x2a", 1);
-	// sendBoardSimulation(3, "0x01000000000000000001", 1);
-	// badBoardSentSimulation(8, "0x01000000000000000001", 9, "0x04000000000000000004", 1, 1);
-	// sendStateSimulation(25, "0x30", 1);
+	// sendStateSimulation(1, "0x2a", 1);
+	// sendBoardSimulation(2, "0x01000000000000000001", 1);
+	// badBoardSentSimulation(3, "0x01000000000000000001", 4, "0x04000000000000000004", 1, 1);
+	// sendStateSimulation(5, "0x30", 1);
 	// checkInSimulation(0);
+	// killSimulation(web3.eth.accounts[0], 1);
+	// giveConsentSimulation(6);
+	// finaliseChannelSimulation();
+	// depositFundsSimulation(1, 0);
 }
 
 function createContractSimulation() {
@@ -108,6 +112,11 @@ function sendStateSimulation(nonce, state, number) {
         		filter.watch(function (error, result) {
             		var receipt = web3.eth.getTransactionReceipt(txhash);
             		if (receipt && receipt.transactionHash == txhash && count < 1) {
+            			if (receipt.logs.length < 2) {
+            				console.log("Nonce: " + nonce + " || State sent: false");
+            				filter.stopWatching();
+            				return;
+            			}
             			console.log("Nonce: " + nonce + " || State sent: " + (receipt.logs[1].topics[0] == web3.sha3("StateSent(bytes)")));
                 		++count;
                 		filter.stopWatching();
@@ -172,12 +181,15 @@ function sendBoardSimulation(nonce, board, number) {
         	filter.watch(function (error, result) {
             	var receipt = web3.eth.getTransactionReceipt(txhash);
             	if (receipt && receipt.transactionHash == txhash && count < 1) {
-                	var check = (TicTacToeAdjudicator.getNonce()['c'][0] == nonce);
-                	console.log("Nonce: " + nonce + " || Board sent: " + check);
+                	if (receipt.logs.length < 1) {
+            				console.log("Nonce: " + nonce + " || State sent: false");
+            				filter.stopWatching();
+            				return;
+            			}
+            		console.log("Nonce: " + nonce + " || Board sent: " + (receipt.logs[0].topics[0] == web3.sha3("CloseEvent(bytes,uint256)")));
                 	++count;
                 	filter.stopWatching();
             	}
-            filter.stopWatching();
         	});
 		} 		
 	);
@@ -255,7 +267,7 @@ function badBoardSentSimulation(oldNonce, oldBoard, newNonce, newBoard, number, 
 	var currentState = TicTacToeAdjudicator.getStateAt(0);
 	// Check if cheating already occured
 	if (currentState == '0x5E' || currentState == '0x6D') {
-		console.log("Nonce: " + nonce + "|| Bad Board Sent: false");
+		console.log("Bad Board Sent: false");
 		return false;
 	}
 	
@@ -283,13 +295,12 @@ function badBoardSentSimulation(oldNonce, oldBoard, newNonce, newBoard, number, 
         	filter.watch(function (error, result) {
             	var receipt = web3.eth.getTransactionReceipt(txhash);
             	if (receipt && receipt.transactionHash == txhash && count < 1) {
-                	if ($('#sender').val() == 0 && TicTacToeAdjudicator.getStateAt(0) == '0x5e') {
-                		console.log("Nonce: " + nonce + "|| Bad Board Sent: true");
-                	} else if ($('#sender').val() == 1 && TicTacToeAdjudicator.getStateAt(0) == '0x6d') {
-                		console.log("Nonce: " + nonce + "|| Bad Board Sent: true");
-                	} else {
-                		console.log("Nonce: " + nonce + "|| Bad Board Sent: false");
-                	}
+                	if (receipt.logs.length < 1) {
+            				console.log("Nonce: " + nonce + " || State sent: false");
+            				filter.stopWatching();
+            				return;
+            			}
+            		console.log("Bad Board sent: " + (receipt.logs[0].topics[0] == web3.sha3("CloseEvent(bytes,uint256)")));
                 	++count;
                 	filter.stopWatching();
             	}
@@ -317,6 +328,11 @@ function checkInSimulation(player) {
         	filter.watch(function (error, result) {
             	var receipt = web3.eth.getTransactionReceipt(txhash);
             	if (receipt && receipt.transactionHash == txhash && count < 1) {
+            		if (receipt.logs.length < 1) {
+            				console.log("Check In: false");
+            				filter.stopWatching();
+            				return;
+            			}
             		console.log("Check In: " + (receipt.logs[0].topics[0] == web3.sha3("CloseEvent(bytes,uint256)")));
                 	++count;
                 	filter.stopWatching();
@@ -326,15 +342,185 @@ function checkInSimulation(player) {
 	);
 }
 
-function killSimulation() {
-	// Remember to sign kill
+function killSimulation(recipient, number) {
+	// Check for Killed(address) event
+	$('input[name=recipient]').val(recipient);
+	$('#sender').val(0);
+	$('#SignTheKill').click();
+	$('#sender').val(1);
+	$('#SignTheKill').click();
+	
+	var value = parseInt(document.getElementById("killTable").rows[2 * number - 1].cells[2].innerHTML);
+	$('input[name=vX]:last').val(value);
+	value = document.getElementById("killTable").rows[2 * number - 1].cells[3].innerHTML;
+	$('input[name=rX]:last').val(value);
+	value = document.getElementById("killTable").rows[2 * number - 1].cells[4].innerHTML;
+	$('input[name=sX]:last').val(value);
+	
+	value = parseInt(document.getElementById("killTable").rows[2 * number].cells[2].innerHTML);
+	$('input[name=vO]:last').val(value);
+	value = (document.getElementById("killTable").rows[2 * number].cells[3].innerHTML);
+	$('input[name=rO]:last').val(value);
+	value = (document.getElementById("killTable").rows[2 * number].cells[4].innerHTML);
+	$('input[name=sO]:last').val(value);
+	
+	var form = document.forms["kill"];
+	var count = 0;
+	TicTacToeRules.kill.sendTransaction(
+		form.recipient.value,
+		parseInt(form.vX.value),
+		form.rX.value,
+		form.sX.value,
+		parseInt(form.vO.value),
+		form.rO.value,
+		form.sO.value,
+		{
+			from: web3.eth.accounts[$('#sender').val()],
+			gas: 4700000
+		}, function (err, result) {
+			 if (err) {
+            	console.error(err);
+            	return;
+        	}
+        	txhash = result;
+        	filter = web3.eth.filter('latest');
+        	filter.watch(function (error, result) {
+            	var receipt = web3.eth.getTransactionReceipt(txhash);
+            	if (receipt && receipt.transactionHash == txhash && count < 1) {
+            		if (receipt.logs.length < 1) {
+            				console.log("Kill: false");
+            				filter.stopWatching();
+            				return;
+            			}
+            		console.log("Kill: " + (receipt.logs[0].topics[0] == web3.sha3("Killed(address)")));
+                	++count;
+                	filter.stopWatching();
+            	}
+			});
+        }
+	);
 }
 
-function giveConsentSimulation() {
+function giveConsentSimulation(nonce) {
+	$('#consentNonce').val(nonce);
+	var form = document.forms['consent'];
+	var count = 0;
+	var nonce = '';
+	for (var i = 0; i < 64; i++) {
+		nonce += '0';
+	}
+	nonce += parseInt(form.nonce.value).toString(16);
+
+	var toBeHashed = '0x'
+		+nonce.slice(-64)
+		+TicTacToeRules.address.slice(2);
+
+	var signature = sign(web3.eth.accounts[$('#sender').val()], web3.sha3(toBeHashed, {encoding: 'hex'}));
+
+	TicTacToeAdjudicator.giveConsent.sendTransaction(
+		signature[0],
+		signature[1],
+		signature[2],
+		{
+			from: web3.eth.accounts[$('#sender').val()],
+			gas: 4700000
+		}, function (err, result) {
+			 if (err) {
+            	console.error(err);
+            	return;
+        	}
+        	txhash = result;
+        	filter = web3.eth.filter('latest');
+        	filter.watch(function (error, result) {
+            	var receipt = web3.eth.getTransactionReceipt(txhash);
+            	if (receipt && receipt.transactionHash == txhash && count < 1) {
+            		if (receipt.logs.length < 1) {
+            				console.log("Consent: false");
+            				filter.stopWatching();
+            				return;
+            			}
+            		console.log("Consent: " + (receipt.logs[0].topics[0] == web3.sha3("ConsentGiven(address,uint256)")));
+                	++count;
+                	filter.stopWatching();
+            	}
+			});
+        }
+	);
+
+	$('#consentTable').append('<tr><td>'
+		+ web3.eth.accounts[$('#sender').val()]
+		+ '</td><td>'
+		+ form.nonce.value
+		+ '</td><td>'
+		+ signature[0]
+		+ '</td><td>'
+		+ signature[1]
+		+ '</td><td>'
+		+ signature[2]
+	);
 }
 
 function finaliseChannelSimulation() {
+	var count = 0;
+	TicTacToeAdjudicator.finaliseChannel.sendTransaction(
+		{
+			from: web3.eth.accounts[$('#sender').val()],
+			gas: 4700000
+		}, function (err, result) {
+			 if (err) {
+            	console.error(err);
+            	return;
+        	}
+        	txhash = result;
+        	filter = web3.eth.filter('latest');
+        	filter.watch(function (error, result) {
+            	var receipt = web3.eth.getTransactionReceipt(txhash);
+            	if (receipt && receipt.transactionHash == txhash && count < 1) {
+            		if (receipt.logs.length < 1) {
+            				console.log("Finalise Channel: false");
+            				filter.stopWatching();
+            				return;
+            			}
+            		console.log("Finalise Channel: " + (receipt.logs[0].topics[0] == web3.sha3("ChannelFinalised(bytes)")));
+                	++count;
+                	filter.stopWatching();
+            	}
+			});
+        }
+	);
 }
 
-function depositFundsSimulation() {
+function depositFundsSimulation(amount, account) {
+	$('input[name=amount]').val(amount);
+	$('input[name=account]:nth-child(' + (2 * account + 5) + ')').click();
+	
+	var form = document.forms['deposit'];
+	var count = 0;
+	TicTacToeLockedState.deposit.sendTransaction(
+		parseInt(form.account.value),
+		{
+			from: web3.eth.accounts[$('#sender').val()],
+			value: form.amount.value
+		}, function (err, result) {
+			 if (err) {
+            	console.error(err);
+            	return;
+        	}
+        	txhash = result;
+        	filter = web3.eth.filter('latest');
+        	filter.watch(function (error, result) {
+            	var receipt = web3.eth.getTransactionReceipt(txhash);
+            	if (receipt && receipt.transactionHash == txhash && count < 1) {
+            		if (receipt.logs.length < 1) {
+            				console.log("Deposit: false");
+            				filter.stopWatching();
+            				return;
+            			}
+            		console.log("Deposit: " + (receipt.logs[0].topics[0] == web3.sha3("Deposited(uint256)")));
+                	++count;
+                	filter.stopWatching();
+            	}
+			});
+        }
+	);
 }
