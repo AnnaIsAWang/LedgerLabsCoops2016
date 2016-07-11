@@ -3,6 +3,8 @@
 ## Getting Started
 In order to use the Tic Tac Toe interface to play a real live game of Tic Tac Toe on Abstracted State Channels, you will either need to have [geth](https://github.com/ethereum/go-ethereum/wiki/geth) running. However, for demonstrational purposes (and to get a feel of how to use the interface), it is ideal to instead have [testrpc](https://github.com/ethereumjs/testrpc) running. If you are using the latter, remember to also get your localhost server up and running and everything should proceed smoothly.
 
+Once you are all set up, you can simply clone this repository onto your local device, then use the command "sudo python -m SimmpleHTTPSServer 80" in the command line inside this directory. Then, open up your localhost:80 and you should be good to go!
+
 Note: Remember to unlock any account that you are planning to use to play
 
 ## How to Play the Game
