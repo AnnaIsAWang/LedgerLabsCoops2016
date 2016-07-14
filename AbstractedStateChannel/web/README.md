@@ -9,7 +9,11 @@ sudo python -m SimmpleHTTPSServer 80
 ```
 in the terminal inside this directory. Then, open up your localhost:80 and you should be good to go!
 
-Note: Remember to unlock any account that you are planning to use to play
+Note: Remember to unlock any account that you are planning to use to play. To do this, let's say for example you are trying to unlock your first account, you would input the following command 
+```
+personal.unlockAccount(eth.accounts[0], "password", 3600000)
+```
+into geth to unlock your account for exactly one hour.
 
 ## How to Play the Game
 Once you have the game loaded, the first step is to create a contract while specifying player X, player O, and the timeout (located in the first section of the top yellow box). You may then need to wait a couple seconds for your contract to be mined, once it is succesfully mined, an alert message should pop up letting you know that you're ready to start playing the game.
