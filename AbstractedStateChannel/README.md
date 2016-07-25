@@ -1,5 +1,7 @@
 # Abstracted State Channel Documentation
 
+Warning, this repository is deprecated. For the most up-to-date state channel abstraction, check out [this](https://github.com/ledgerlabs/toy-state-channels).
+
 ### Overview
 A common concern that crosses people’s minds when they think about blockchain technology and [Ethereum](ethereum.org) is the issue of scalibility. How is it going to be possible for 7.1 billion people to effectively use a decentralized platform such as Ethereum without constantly crashing the system with excessive traffic? One of many solutions is the introduction of State Channels, essentially a generalized version of [Payment Channels](https://en.bitcoin.it/wiki/Payment_channels) in Bitcoin. The State Channel implementation presented here is abstracted in a way that it can be used for a plethora of different purposes.
 
